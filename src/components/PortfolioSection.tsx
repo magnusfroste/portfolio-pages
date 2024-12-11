@@ -52,12 +52,12 @@ export const PortfolioSection = () => {
               transition={{ delay: index * 0.2 }}
             >
               <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-400">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="relative h-[600px] md:h-[600px]">
+                <div className="grid md:grid-cols-2 gap-6 h-full">
+                  <div className="relative h-[400px] md:h-auto aspect-[4/3] overflow-hidden">
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover object-center"
                     />
                   </div>
                   <div className="p-6 flex flex-col justify-between">
