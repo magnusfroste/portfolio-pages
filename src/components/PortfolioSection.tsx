@@ -32,7 +32,7 @@ const portfolioItems = [
     image: 'skolai.png',
     demoLink: "https://skola.froste.eu",
   }
-  
+
 ];
 
 export const PortfolioSection = () => {
@@ -53,7 +53,7 @@ export const PortfolioSection = () => {
             >
               <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="relative h-[400px] md:h-full">
+                  <div className="relative h-[600px] md:h-full">
                     <img
                       src={item.image}
                       alt={item.title}
