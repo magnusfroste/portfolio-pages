@@ -51,9 +51,9 @@ export const PortfolioSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.2 }}
             >
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-400">
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="relative h-[600px] md:h-full">
+                  <div className="relative h-[600px] md:h-[600px]">
                     <img
                       src={item.image}
                       alt={item.title}
