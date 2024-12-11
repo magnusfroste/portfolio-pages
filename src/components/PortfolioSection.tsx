@@ -4,24 +4,37 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const portfolioItems = [
+
   {
-    title: "AI-Powered Market Analysis Platform",
-    description: "Developed an innovative market analysis platform that leverages machine learning to identify emerging market trends and opportunities. The system processes vast amounts of market data to provide actionable insights for strategic decision-making.",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    demoLink: "#",
+    title: "LEtGO, for LEGO entusiasts!",
+    description: "Developed an innovative cure your LEGO craving, buy / sell or trade with neighbours! market - “just take a simple photo and AI is adding descriptions. based on image recognition,
+    image: letgo.png,
+    demoLink: "https://friendly-classifieds-hub.vercel.app",
   },
+
   {
-    title: "Intelligent Customer Success Framework",
-    description: "Created a comprehensive customer success framework that uses AI to predict customer needs and potential challenges. This proactive approach resulted in a 40% increase in customer satisfaction and 25% reduction in churn rate.",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    demoLink: "#",
+    title: "Chat with your visitor statistics!",
+    description: "Created a comprehensive customer success framework that uses AI to help store owners to better understand their visitor data. This proactive approach resulted in an increased interest for the core product. Upload and visualize your visitor data, get advices how to increase sales!”,
+    image: “visitors.png,
+    demoLink: "https://llm-retail.anavid.io",
   },
+
   {
-    title: "Startup Innovation Accelerator",
-    description: "Designed and implemented an AI-driven startup acceleration program that helps founders validate their ideas and go-to-market strategies faster. The platform combines market intelligence with predictive analytics.",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-    demoLink: "#",
+    title: "Aircount",
+    description: "Streamlined accounting for solopreneurs, get in driver seat with double-entry accounting,
+    image: aircount.png,
+    demoLink: "https://aircount.froste.eu“,
   }
+
+
+  {
+    title: "School AI",
+    description: "Innovative concepts for future learning, exploring various concepts that combine children's interests and curiosity to create engaging learning methods.",
+    image: skola.png,
+    demoLink: "https://skola.froste.eu“,
+  }
+
+
 ];
 
 export const PortfolioSection = () => {
