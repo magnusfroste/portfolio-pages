@@ -54,6 +54,12 @@ const portfolioItems = [
     demoLink: "https://match.froste.eu",
   },
 
+  {
+    title: "Meetalyzer for Better Meetings  ",
+    description: "By incorporating sentiment analysis, our solution delivers real-time insights into the emotional dynamics of your meetings. Imagine seamlessly identifying moods, gauging engagement levels, and adapting your strategies to foster a more positive and productive atmosphere. Enhance team collaboration, pinpoint areas of concern, and ensure everyone's voice is heard and valued",
+    image: 'meetalyzer.png',
+    demoLink: "https://meeting.froste.eu",
+  },
 
 
 ];
