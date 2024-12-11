@@ -189,6 +189,27 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_clicks: {
+        Row: {
+          clicked_at: string | null
+          id: number
+          project_title: string
+          visitor_ip: string | null
+        }
+        Insert: {
+          clicked_at?: string | null
+          id?: number
+          project_title: string
+          visitor_ip?: string | null
+        }
+        Update: {
+          clicked_at?: string | null
+          id?: number
+          project_title?: string
+          visitor_ip?: string | null
+        }
+        Relationships: []
+      }
       sellers: {
         Row: {
           bio: string | null

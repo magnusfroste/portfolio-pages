@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 const portfolioItems = [
 
@@ -65,6 +66,18 @@ const portfolioItems = [
 ];
 
 export const PortfolioSection = () => {
+  const handlePortfolioClick = async (projectTitle: string) => {
+    try {
+      await supabase
+        .from('portfolio_clicks')
+        .insert([{ project_title: projectTitle }]);
+      
+      console.log('Click tracked successfully');
+    } catch (error) {
+      console.error('Error tracking click:', error);
+    }
+  };
+
   return (
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
@@ -104,6 +117,7 @@ export const PortfolioSection = () => {
                       variant="outline"
                       className="w-fit"
                       asChild
+                      onClick={() => handlePortfolioClick(item.title)}
                     >
                       <a href={item.demoLink} target="_blank" rel="noopener noreferrer">
                         View PoC <ExternalLink className="ml-2 h-4 w-4" />
