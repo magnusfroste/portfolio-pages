@@ -6,35 +6,33 @@ import { Button } from "@/components/ui/button";
 const portfolioItems = [
 
   {
-    title: "LEtGO, for LEGO entusiasts!",
-    description: "Developed an innovative cure your LEGO craving, buy / sell or trade with neighbours! market - “just take a simple photo and AI is adding descriptions. based on image recognition,
-    image: letgo.png,
+    title: "LEtGO, for LEGO entusiasts",
+    description: "Developed an innovative cure your LEGO craving, buy / sell or trade with neighbours! market - “just take a simple photo and AI is adding descriptions. based on image recognition",
+    image: "letgo.png",
     demoLink: "https://friendly-classifieds-hub.vercel.app",
   },
 
   {
-    title: "Chat with your visitor statistics!",
-    description: "Created a comprehensive customer success framework that uses AI to help store owners to better understand their visitor data. This proactive approach resulted in an increased interest for the core product. Upload and visualize your visitor data, get advices how to increase sales!”,
-    image: “visitors.png,
+    title: "Chat with your visitor statistics",
+    description: "Created a comprehensive customer success framework that uses AI to help store owners to better understand their visitor data. This proactive approach resulted in an increased interest for the core product. Upload and visualize your visitor data, get advices how to increase sales",
+    image: "visitors.png",
     demoLink: "https://llm-retail.anavid.io",
   },
 
   {
     title: "Aircount",
-    description: "Streamlined accounting for solopreneurs, get in driver seat with double-entry accounting,
-    image: aircount.png,
-    demoLink: "https://aircount.froste.eu“,
-  }
-
+    description: "Streamlined accounting for solopreneurs, get in driver seat with double-entry accounting",
+    image: "aircount.png",
+    demoLink: "https://aircount.froste.eu",
+  },
 
   {
     title: "School AI",
     description: "Innovative concepts for future learning, exploring various concepts that combine children's interests and curiosity to create engaging learning methods.",
-    image: skola.png,
-    demoLink: "https://skola.froste.eu“,
+    image: 'skolai.png',
+    demoLink: "https://skola.froste.eu",
   }
-
-
+  
 ];
 
 export const PortfolioSection = () => {
