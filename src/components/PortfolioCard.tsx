@@ -55,6 +55,7 @@ export const PortfolioCard = ({
     isDragging
   } = useSortable({
     id: item.id,
+    disabled: !isEditing, // Disable dragging when not in edit mode
   });
 
   const style = {
@@ -75,7 +76,7 @@ export const PortfolioCard = ({
         <ContextMenuTrigger>
           <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <div className="grid md:grid-cols-2 gap-10 items-start relative">
-              {session && (
+              {session && isEditing && (
                 <div 
                   {...attributes} 
                   {...listeners}
