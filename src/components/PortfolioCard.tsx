@@ -91,8 +91,9 @@ export const PortfolioCard = ({
                         <Textarea
                           {...form.register('description')}
                           defaultValue={item.description}
-                          className="mb-6 text-lg leading-relaxed"
+                          className="mb-6 text-lg leading-relaxed min-h-[200px]"
                           placeholder="Enter description"
+                          rows={8}
                         />
                         <div className="flex items-center space-x-2 mb-10">
                           <Link className="h-4 w-4 text-muted-foreground" />
