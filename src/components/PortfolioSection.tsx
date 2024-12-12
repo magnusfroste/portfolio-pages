@@ -5,11 +5,13 @@ import { PortfolioCard } from "./PortfolioCard";
 import { PortfolioHeader } from "./portfolio/PortfolioHeader";
 import { AddPortfolioButton } from "./portfolio/AddPortfolioButton";
 import { usePortfolioItems } from "./portfolio/usePortfolioItems";
+import { useToast } from "./ui/use-toast";
 
 export const PortfolioSection = () => {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -47,13 +49,34 @@ export const PortfolioSection = () => {
       setSelectedProject(project);
     } catch (error) {
       console.error('Error tracking click:', error);
+      toast({
+        title: "Error",
+        description: "Failed to track portfolio click",
+        variant: "destructive",
+      });
     }
   };
 
   const handleAddNewCard = async () => {
+    if (!session) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to add portfolio items",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newId = await addNewCard();
     if (newId) {
       setEditingId(newId);
+    }
+  };
+
+  const handleSave = async (item: any, formData: any) => {
+    const success = await updateItem(item, formData);
+    if (success) {
+      setEditingId(null);
     }
   };
 
@@ -80,7 +103,7 @@ export const PortfolioSection = () => {
               session={session}
               isEditing={editingId === item.id}
               onEdit={() => setEditingId(item.id)}
-              onSave={(formData) => updateItem(item, formData)}
+              onSave={(formData) => handleSave(item, formData)}
               onCancel={() => setEditingId(null)}
               onDelete={() => deleteItem(item.id)}
               onClick={() => handlePortfolioClick(item)}

@@ -19,22 +19,36 @@ export const usePortfolioItems = (session: any) => {
         setPortfolioItems(data || []);
       } catch (error) {
         console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch portfolio items",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPortfolioItems();
-  }, []);
+  }, [toast]);
 
   const addNewCard = async () => {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add items",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     try {
       const newCard = {
         header: "New Project",
         description: "Click to edit description",
         link: "",
         sort_order: portfolioItems.length,
-        user_id: session?.user?.id
+        user_id: session.user.id
       };
 
       const { data, error } = await supabase
@@ -65,6 +79,15 @@ export const usePortfolioItems = (session: any) => {
   };
 
   const deleteItem = async (id: number) => {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to delete items",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('portfolio_cards')
@@ -89,6 +112,15 @@ export const usePortfolioItems = (session: any) => {
   };
 
   const updateItem = async (item: any, formData: any) => {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to update items",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     try {
       const { error } = await supabase
         .from('portfolio_cards')
@@ -97,7 +129,7 @@ export const usePortfolioItems = (session: any) => {
           description: formData.description,
           link: formData.link,
           image_url: formData.image_url,
-          user_id: session?.user?.id
+          user_id: session.user.id
         })
         .eq('id', item.id);
 
