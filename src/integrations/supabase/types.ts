@@ -101,36 +101,6 @@ export type Database = {
         }
         Relationships: []
       }
-      contact_messages: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: number
-          message: string
-          name: string
-          status: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id?: number
-          message: string
-          name: string
-          status?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: number
-          message?: string
-          name?: string
-          status?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       favourites: {
         Row: {
           classified_id: number
@@ -273,6 +243,36 @@ export type Database = {
           project_title?: string
           user_id?: string | null
           visitor_ip?: string | null
+        }
+        Relationships: []
+      }
+      portfolio_messages: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: number
+          message: string
+          name: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: number
+          message: string
+          name: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: number
+          message?: string
+          name?: string
+          status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

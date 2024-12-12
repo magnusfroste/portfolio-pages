@@ -20,7 +20,7 @@ export const Contact = () => {
 
     try {
       const { error } = await supabase
-        .from('contact_messages')
+        .from('portfolio_messages')
         .insert([{ name, email, message }]);
 
       if (error) throw error;

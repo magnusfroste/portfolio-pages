@@ -95,14 +95,14 @@ const Dashboard = () => {
 
         // Fetch total messages and latest messages
         const { count: messagesCount, error: messagesCountError } = await supabase
-          .from('contact_messages')
+          .from('portfolio_messages')
           .select('*', { count: 'exact' });
 
         if (messagesCountError) throw messagesCountError;
         setTotalMessages(messagesCount || 0);
 
         const { data: latestMessagesData, error: latestMessagesError } = await supabase
-          .from('contact_messages')
+          .from('portfolio_messages')
           .select('*')
           .order('created_at', { ascending: false })
           .limit(5);
@@ -128,7 +128,7 @@ const Dashboard = () => {
   const handleDeleteMessage = async (id: number) => {
     try {
       const { error } = await supabase
-        .from('contact_messages')
+        .from('portfolio_messages')
         .delete()
         .eq('id', id);
 
