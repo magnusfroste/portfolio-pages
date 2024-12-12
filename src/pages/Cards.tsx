@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, ArrowLeft } from "lucide-react";
 
 type PortfolioCard = {
   id: number;
@@ -88,7 +88,16 @@ const Cards = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Portfolio Cards Management</h1>
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => navigate("/dashboard")}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl font-bold">Portfolio Cards Management</h1>
+        </div>
         <Button onClick={() => navigate("/dashboard/new")}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Add New Item
