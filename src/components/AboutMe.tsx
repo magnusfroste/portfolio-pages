@@ -1,19 +1,7 @@
 import { motion } from "framer-motion";
-import { Edit, X, Save } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
-import { AboutFeatures } from "./about/AboutFeatures";
-import { useAboutData } from "@/hooks/useAboutData";
-import { AboutData } from "@/types/about";
+import { Brain, Rocket, Command } from "lucide-react";
 
 export const AboutMe = () => {
-  const { session, isEditing, setIsEditing, aboutData, handleSave } = useAboutData();
-  const form = useForm<AboutData>();
-
-  if (!aboutData) return null;
-
   return (
     <section className="py-20 px-4 bg-secondary/30">
       <motion.div 
@@ -22,53 +10,9 @@ export const AboutMe = () => {
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto"
       >
-        <div className="flex justify-between items-center mb-12">
-          {isEditing ? (
-            <Input
-              {...form.register('title')}
-              defaultValue={aboutData.title}
-              className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-            />
-          ) : (
-            <h2 className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              {aboutData.title}
-            </h2>
-          )}
-          
-          {session && (
-            <div className="flex gap-2">
-              {isEditing ? (
-                <>
-                  <Button
-                    variant="default"
-                    onClick={() => handleSave(form.getValues())}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    Save
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditing(false);
-                      form.reset(aboutData);
-                    }}
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="outline"
-                  onClick={() => setIsEditing(true)}
-                >
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
+        <h2 className="text-3xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+          About Me
+        </h2>
         
         <div className="grid md:grid-cols-2 gap-12">
           <motion.div 
@@ -77,34 +21,55 @@ export const AboutMe = () => {
             transition={{ delay: 0.2 }}
             className="space-y-6"
           >
-            {isEditing ? (
-              aboutData.main_description.map((paragraph, index) => (
-                <Textarea
-                  key={index}
-                  {...form.register(`main_description.${index}`)}
-                  defaultValue={paragraph}
-                  className="text-lg leading-relaxed"
-                />
-              ))
-            ) : (
-              aboutData.main_description.map((paragraph, index) => (
-                <p key={index} className="text-lg leading-relaxed">
-                  {paragraph}
-                </p>
-              ))
-            )}
+            <p className="text-lg leading-relaxed">
+              As a seasoned technology leader and innovator, I've dedicated my career to helping organizations navigate the rapidly evolving tech landscape. My passion lies in identifying transformative opportunities at the intersection of business and technology, particularly in the realm of artificial intelligence.
+            </p>
+            <p className="text-lg leading-relaxed">
+              With extensive experience in rapid application prototyping and product development, I excel at turning complex ideas into tangible solutions. My approach combines strategic thinking with hands-on technical expertise, ensuring that innovation translates directly into business value.
+            </p>
           </motion.div>
           
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
+            className="space-y-8"
           >
-            <AboutFeatures 
-              features={aboutData.features}
-              isEditing={isEditing}
-              register={form.register}
-            />
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <Brain className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">AI Integration</h3>
+                <p className="text-muted-foreground">
+                  Pioneering AI solutions that transform business operations and create competitive advantages.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-accent/10 rounded-lg">
+                <Rocket className="w-6 h-6 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Product Strategy</h3>
+                <p className="text-muted-foreground">
+                  20+ years of experience in product management and successful market launches across different sectors.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-primary/10 rounded-lg">
+                <Command className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Technology Leadership</h3>
+                <p className="text-muted-foreground">
+                  Proven track record as CTO, leading teams and implementing cutting-edge technology solutions.
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>
