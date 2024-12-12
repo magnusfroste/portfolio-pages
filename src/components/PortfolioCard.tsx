@@ -25,6 +25,7 @@ type PortfolioCardProps = {
   onCancel: () => void;
   onDelete: () => void;
   onClick: () => void;
+  index: number; // Add index prop to determine image position
 };
 
 export const PortfolioCard = ({
@@ -36,6 +37,7 @@ export const PortfolioCard = ({
   onCancel,
   onDelete,
   onClick,
+  index,
 }: PortfolioCardProps) => {
   const form = useForm({
     defaultValues: {
@@ -55,7 +57,7 @@ export const PortfolioCard = ({
     isDragging
   } = useSortable({
     id: item.id,
-    disabled: !session, // Only disable dragging when not logged in
+    disabled: !session,
   });
 
   const style = {
@@ -63,6 +65,9 @@ export const PortfolioCard = ({
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
+  // Determine if image should be on the right based on index
+  const imageOnRight = index % 2 !== 0;
 
   return (
     <motion.div
@@ -85,7 +90,7 @@ export const PortfolioCard = ({
                   <GripVertical className="h-6 w-6 text-gray-400" />
                 </div>
               )}
-              <div className="grid md:grid-cols-2 gap-10 items-start">
+              <div className={`grid md:grid-cols-2 gap-10 items-start ${imageOnRight ? 'direction-rtl' : ''}`}>
                 <div className="p-6">
                   <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
                     {isEditing ? (

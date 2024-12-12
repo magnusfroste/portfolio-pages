@@ -139,7 +139,7 @@ export const PortfolioSection = () => {
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-8">
-              {portfolioItems.map((item) => (
+              {portfolioItems.map((item, index) => (
                 <PortfolioCard
                   key={item.id}
                   item={item}
@@ -150,6 +150,7 @@ export const PortfolioSection = () => {
                   onCancel={() => setEditingId(null)}
                   onDelete={() => deleteItem(item.id)}
                   onClick={() => handlePortfolioClick(item)}
+                  index={index}
                 />
               ))}
             </div>
