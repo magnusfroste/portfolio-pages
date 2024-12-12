@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { Loader2 } from "lucide-react";
@@ -17,11 +17,11 @@ export const ImageUploadField = ({ form, initialImageUrl }: ImageUploadFieldProp
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // Set initial preview URL when component mounts or when initialImageUrl changes
-  useState(() => {
+  useEffect(() => {
     if (initialImageUrl) {
       setPreviewUrl(initialImageUrl);
     }
-  });
+  }, [initialImageUrl]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
