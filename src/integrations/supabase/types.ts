@@ -216,6 +216,36 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_cards: {
+        Row: {
+          created_at: string | null
+          description: string
+          header: string
+          id: number
+          image_url: string | null
+          link: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          header: string
+          id?: number
+          image_url?: string | null
+          link: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          header?: string
+          id?: number
+          image_url?: string | null
+          link?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       portfolio_clicks: {
         Row: {
           clicked_at: string | null
