@@ -55,7 +55,7 @@ export const PortfolioCard = ({
     isDragging
   } = useSortable({
     id: item.id,
-    disabled: !isEditing, // Disable dragging when not in edit mode
+    disabled: !isEditing,
   });
 
   const style = {
@@ -75,46 +75,48 @@ export const PortfolioCard = ({
       <ContextMenu>
         <ContextMenuTrigger>
           <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div className="grid md:grid-cols-2 gap-10 items-start relative">
+            <div className="relative">
               {session && isEditing && (
                 <div 
                   {...attributes} 
                   {...listeners}
-                  className="absolute left-4 top-4 cursor-grab active:cursor-grabbing p-2 hover:bg-gray-100 rounded-lg"
+                  className="absolute left-1/2 -translate-x-1/2 top-2 z-10 cursor-grab active:cursor-grabbing p-2 hover:bg-gray-100 rounded-lg bg-white/80 backdrop-blur-sm"
                 >
                   <GripVertical className="h-6 w-6 text-gray-400" />
                 </div>
               )}
-              <div className="p-6">
-                <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
+              <div className="grid md:grid-cols-2 gap-10 items-start">
+                <div className="p-6">
+                  <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
+                    {isEditing ? (
+                      <FormProvider {...form}>
+                        <ImageUploadField form={form} initialImageUrl={item.image_url} />
+                      </FormProvider>
+                    ) : (
+                      item.image_url && (
+                        <img
+                          src={item.image_url}
+                          alt={item.header}
+                          className="absolute inset-0 w-full h-full object-cover object-center"
+                          loading="lazy"
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+                <div className="p-12 flex flex-col justify-between">
                   {isEditing ? (
-                    <FormProvider {...form}>
-                      <ImageUploadField form={form} initialImageUrl={item.image_url} />
-                    </FormProvider>
+                    <>
+                      <EditablePortfolioContent form={form} item={item} />
+                      {session && <PortfolioCardActions 
+                        onSave={() => onSave(form.getValues())} 
+                        onCancel={onCancel} 
+                      />}
+                    </>
                   ) : (
-                    item.image_url && (
-                      <img
-                        src={item.image_url}
-                        alt={item.header}
-                        className="absolute inset-0 w-full h-full object-cover object-center"
-                        loading="lazy"
-                      />
-                    )
+                    <StaticPortfolioContent item={item} onClick={onClick} />
                   )}
                 </div>
-              </div>
-              <div className="p-12 flex flex-col justify-between">
-                {isEditing ? (
-                  <>
-                    <EditablePortfolioContent form={form} item={item} />
-                    {session && <PortfolioCardActions 
-                      onSave={() => onSave(form.getValues())} 
-                      onCancel={onCancel} 
-                    />}
-                  </>
-                ) : (
-                  <StaticPortfolioContent item={item} onClick={onClick} />
-                )}
               </div>
             </div>
           </Card>
