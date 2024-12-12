@@ -25,7 +25,7 @@ type PortfolioCardProps = {
   onCancel: () => void;
   onDelete: () => void;
   onClick: () => void;
-  index: number; // Add index prop to determine image position
+  index: number;
 };
 
 export const PortfolioCard = ({
@@ -90,7 +90,7 @@ export const PortfolioCard = ({
                   <GripVertical className="h-6 w-6 text-gray-400" />
                 </div>
               )}
-              <div className={`grid md:grid-cols-2 gap-10 items-start ${imageOnRight ? 'direction-rtl' : ''}`}>
+              <div className={`grid md:grid-cols-2 gap-10 items-start ${imageOnRight ? 'md:flex md:flex-row-reverse' : ''}`}>
                 <div className="p-6">
                   <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
                     {isEditing ? (
