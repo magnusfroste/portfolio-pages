@@ -19,12 +19,52 @@ export const useAboutData = () => {
 
   const fetchAboutData = async () => {
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('portfolio_about')
         .select('*')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No data exists, let's create the default row
+          const defaultData = {
+            id: 1,
+            title: 'About Me',
+            main_description: [
+              'As a seasoned technology leader and innovator, I\'ve dedicated my career to helping organizations navigate the rapidly evolving tech landscape.',
+              'With extensive experience in rapid application prototyping and product development, I excel at turning complex ideas into tangible solutions.'
+            ],
+            features: [
+              {
+                title: 'AI Integration',
+                description: 'Pioneering AI solutions that transform business operations and create competitive advantages.',
+                icon: 'Brain'
+              },
+              {
+                title: 'Product Strategy',
+                description: '20+ years of experience in product management and successful market launches across different sectors.',
+                icon: 'Rocket'
+              },
+              {
+                title: 'Technology Leadership',
+                description: 'Proven track record as CTO, leading teams and implementing cutting-edge technology solutions.',
+                icon: 'Command'
+              }
+            ]
+          };
+
+          const { data: insertedData, error: insertError } = await supabase
+            .from('portfolio_about')
+            .insert(defaultData)
+            .select()
+            .single();
+
+          if (insertError) throw insertError;
+          data = insertedData;
+        } else {
+          throw error;
+        }
+      }
 
       // Parse the features JSON into Feature[] type
       const parsedData: AboutData = {
@@ -36,6 +76,11 @@ export const useAboutData = () => {
       return parsedData;
     } catch (error) {
       console.error('Error fetching about data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load about section data",
+        variant: "destructive",
+      });
       return null;
     }
   };
