@@ -110,12 +110,18 @@ const Cards = () => {
               <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="grid md:grid-cols-2 gap-10 items-start">
                   <div className="p-6">
-                    <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
-                      <img
-                        src={item.image_url || '/placeholder.svg'}
-                        alt={item.header}
-                        className="absolute inset-0 w-full h-full object-cover object-center"
-                      />
+                    <div 
+                      className="relative w-full rounded-md overflow-hidden" 
+                      style={{ height: '300px' }}
+                    >
+                      {item.image_url && (
+                        <img
+                          src={item.image_url}
+                          alt={item.header}
+                          className="absolute inset-0 w-full h-full object-cover object-center"
+                          loading="lazy"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="p-12 flex flex-col justify-between">
