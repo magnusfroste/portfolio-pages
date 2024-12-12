@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export const usePortfolioItems = (session: any) => {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
@@ -31,6 +32,38 @@ export const usePortfolioItems = (session: any) => {
 
     fetchPortfolioItems();
   }, [toast]);
+
+  const reorderItems = async (oldIndex: number, newIndex: number) => {
+    try {
+      const newItems = arrayMove(portfolioItems, oldIndex, newIndex);
+      
+      // Update the sort_order of all items
+      const updates = newItems.map((item, index) => ({
+        id: item.id,
+        sort_order: index,
+      }));
+
+      const { error } = await supabase
+        .from('portfolio_cards')
+        .upsert(updates);
+
+      if (error) throw error;
+
+      setPortfolioItems(newItems);
+
+      toast({
+        title: "Success",
+        description: "Portfolio items reordered successfully",
+      });
+    } catch (error) {
+      console.error('Error reordering items:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reorder portfolio items",
+        variant: "destructive",
+      });
+    }
+  };
 
   const addNewCard = async () => {
     if (!session?.user?.id) {
@@ -166,5 +199,6 @@ export const usePortfolioItems = (session: any) => {
     addNewCard,
     deleteItem,
     updateItem,
+    reorderItems,
   };
 };

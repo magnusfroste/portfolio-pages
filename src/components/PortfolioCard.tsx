@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Edit, X } from "lucide-react";
+import { Edit, X, GripVertical } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import {
@@ -13,6 +13,8 @@ import { StaticPortfolioContent } from "./portfolio/StaticPortfolioContent";
 import { PortfolioCardActions } from "./portfolio/PortfolioCardActions";
 import { ImageUploadField } from "./ImageUploadField";
 import { FormProvider } from "react-hook-form";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type PortfolioCardProps = {
   item: any;
@@ -44,8 +46,27 @@ export const PortfolioCard = ({
     },
   });
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({
+    id: item.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
     <motion.div
+      ref={setNodeRef}
+      style={style}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
@@ -53,7 +74,16 @@ export const PortfolioCard = ({
       <ContextMenu>
         <ContextMenuTrigger>
           <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div className="grid md:grid-cols-2 gap-10 items-start">
+            <div className="grid md:grid-cols-2 gap-10 items-start relative">
+              {session && (
+                <div 
+                  {...attributes} 
+                  {...listeners}
+                  className="absolute left-4 top-4 cursor-grab active:cursor-grabbing p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  <GripVertical className="h-6 w-6 text-gray-400" />
+                </div>
+              )}
               <div className="p-6">
                 <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
                   {isEditing ? (

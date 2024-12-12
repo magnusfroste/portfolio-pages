@@ -6,12 +6,22 @@ import { PortfolioHeader } from "./portfolio/PortfolioHeader";
 import { AddPortfolioButton } from "./portfolio/AddPortfolioButton";
 import { usePortfolioItems } from "./portfolio/usePortfolioItems";
 import { useToast } from "./ui/use-toast";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 export const PortfolioSection = () => {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -32,8 +42,20 @@ export const PortfolioSection = () => {
     isLoading,
     addNewCard,
     deleteItem,
-    updateItem
+    updateItem,
+    reorderItems
   } = usePortfolioItems(session);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = portfolioItems.findIndex(item => item.id === active.id);
+    const newIndex = portfolioItems.findIndex(item => item.id === over.id);
+    
+    await reorderItems(oldIndex, newIndex);
+  };
 
   const handlePortfolioClick = async (project: any) => {
     if (editingId === project.id) return;
@@ -95,21 +117,33 @@ export const PortfolioSection = () => {
       <div className="max-w-6xl mx-auto">
         <PortfolioHeader />
         
-        <div className="space-y-8">
-          {portfolioItems.map((item) => (
-            <PortfolioCard
-              key={item.id}
-              item={item}
-              session={session}
-              isEditing={editingId === item.id}
-              onEdit={() => setEditingId(item.id)}
-              onSave={(formData) => handleSave(item, formData)}
-              onCancel={() => setEditingId(null)}
-              onDelete={() => deleteItem(item.id)}
-              onClick={() => handlePortfolioClick(item)}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis]}
+        >
+          <SortableContext
+            items={portfolioItems.map(item => item.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-8">
+              {portfolioItems.map((item) => (
+                <PortfolioCard
+                  key={item.id}
+                  item={item}
+                  session={session}
+                  isEditing={editingId === item.id}
+                  onEdit={() => setEditingId(item.id)}
+                  onSave={(formData) => handleSave(item, formData)}
+                  onCancel={() => setEditingId(null)}
+                  onDelete={() => deleteItem(item.id)}
+                  onClick={() => handlePortfolioClick(item)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
 
         {session && (
           <AddPortfolioButton onAdd={handleAddNewCard} />
