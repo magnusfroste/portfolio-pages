@@ -101,6 +101,33 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: number
+          message: string
+          name: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: number
+          message: string
+          name: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: number
+          message?: string
+          name?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
       favourites: {
         Row: {
           classified_id: number
