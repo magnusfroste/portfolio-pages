@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, MousePointerClick, Trash2 } from "lucide-react";
+import { MessageSquare, MousePointerClick, Trash2, GripVertical } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type ContactMessage = {
   id: number;
@@ -25,6 +42,41 @@ type ContactMessage = {
 type PopularCard = {
   header: string;
   clicks: number;
+};
+
+const SortableCard = ({ card, index }: { card: PopularCard; index: number }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: card.header });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="mb-4 p-3 border rounded-lg"
+    >
+      <div className="flex justify-between items-start">
+        <div className="font-medium flex items-center gap-2">
+          <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+            <GripVertical className="h-4 w-4 text-muted-foreground" />
+          </button>
+          {index + 1}. {card.header}
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {card.clicks} clicks
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const DashboardStats = ({
@@ -43,7 +95,50 @@ export const DashboardStats = ({
   onDeleteMessage: (id: number) => Promise<void>;
 }) => {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
+  const [cards, setCards] = useState(popularCards);
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      setCards((items) => {
+        const oldIndex = items.findIndex((item) => item.header === active.id);
+        const newIndex = items.findIndex((item) => item.header === over.id);
+        
+        return arrayMove(items, oldIndex, newIndex);
+      });
+
+      try {
+        // Update sort order in the database
+        const { error } = await supabase
+          .from('portfolio_cards')
+          .update({ sort_order: cards.findIndex(card => card.header === active.id) })
+          .eq('header', active.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Card order updated successfully",
+        });
+      } catch (error) {
+        console.error('Error updating sort order:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update card order",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -58,21 +153,20 @@ export const DashboardStats = ({
           <CardContent>
             <div className="text-2xl font-bold mb-4">{totalClicks} total clicks</div>
             <ScrollArea className="h-[200px]">
-              {popularCards.map((card, index) => (
-                <div
-                  key={card.header}
-                  className="mb-4 p-3 border rounded-lg"
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={cards.map(card => card.header)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="font-medium">
-                      {index + 1}. {card.header}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {card.clicks} clicks
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  {cards.map((card, index) => (
+                    <SortableCard key={card.header} card={card} index={index} />
+                  ))}
+                </SortableContext>
+              </DndContext>
             </ScrollArea>
           </CardContent>
         </Card>
