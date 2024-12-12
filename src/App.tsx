@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AddPortfolioItem from "./pages/AddPortfolioItem";
 import EditPortfolioItem from "./pages/EditPortfolioItem";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -18,9 +20,31 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/new" element={<AddPortfolioItem />} />
-          <Route path="/dashboard/edit/:id" element={<EditPortfolioItem />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/new"
+            element={
+              <ProtectedRoute>
+                <AddPortfolioItem />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditPortfolioItem />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
