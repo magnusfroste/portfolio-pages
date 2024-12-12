@@ -3,9 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { ProjectDialog } from "./ProjectDialog";
 
 const portfolioItems = [
-
   {
     title: "LEtGO, for LEGO Entusiasts",
     description: "Developed an innovative cure for your LEGO craving, buy / sell or trade with neighbours, based on you location - “just take a simple photo and AI is adding descriptions on all lego pieces. Based on image recognition and LLM",
@@ -66,12 +67,15 @@ const portfolioItems = [
 ];
 
 export const PortfolioSection = () => {
-  const handlePortfolioClick = async (projectTitle: string) => {
+  const [selectedProject, setSelectedProject] = useState<null | typeof portfolioItems[0]>(null);
+
+  const handlePortfolioClick = async (project: typeof portfolioItems[0]) => {
     try {
       await supabase
         .from('portfolio_clicks')
-        .insert([{ project_title: projectTitle }]);
+        .insert([{ project_title: project.title }]);
       
+      setSelectedProject(project);
       console.log('Click tracked successfully');
     } catch (error) {
       console.error('Error tracking click:', error);
@@ -110,19 +114,29 @@ export const PortfolioSection = () => {
                         <CardTitle className="text-2xl mb-6">{item.title}</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
-                        <p className="text-muted-foreground mb-10 text-lg leading-relaxed">{item.description}</p>
+                        <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+                          {item.description}
+                        </p>
                       </CardContent>
                     </div>
-                    <Button
-                      variant="outline"
-                      className="w-fit"
-                      asChild
-                      onClick={() => handlePortfolioClick(item.title)}
-                    >
-                      <a href={item.demoLink} target="_blank" rel="noopener noreferrer">
-                        View PoC <ExternalLink className="ml-2 h-4 w-4" />
-                      </a>
-                    </Button>
+                    <div className="flex gap-4">
+                      <Button
+                        variant="default"
+                        className="w-fit"
+                        onClick={() => handlePortfolioClick(item)}
+                      >
+                        View in App
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-fit"
+                        asChild
+                      >
+                        <a href={item.demoLink} target="_blank" rel="noopener noreferrer">
+                          Open in New Tab <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -130,6 +144,12 @@ export const PortfolioSection = () => {
           ))}
         </div>
       </div>
+
+      <ProjectDialog
+        isOpen={!!selectedProject}
+        onClose={() => setSelectedProject(null)}
+        project={selectedProject}
+      />
     </section>
   );
 };
