@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { DashboardStats } from "@/components/DashboardStats";
+import { Navigation } from "@/components/Navigation";
 
 type ContactMessage = {
   id: number;
@@ -153,6 +154,7 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto p-6">
+        <Navigation />
         <h1 className="text-2xl font-bold mb-6">Loading...</h1>
       </div>
     );
@@ -160,6 +162,7 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <Navigation />
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
       </div>

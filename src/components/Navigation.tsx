@@ -1,18 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { LogIn, LogOut, LayoutDashboard } from "lucide-react";
 
 export const Navigation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
+    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -22,16 +25,17 @@ export const Navigation = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleAuthClick = () => {
+  const handleAuthClick = async () => {
     if (session) {
-      supabase.auth.signOut();
+      await supabase.auth.signOut();
+      navigate("/");
     } else {
       navigate("/login");
     }
   };
 
   return (
-    <div className="absolute top-4 right-4 flex gap-4">
+    <div className="fixed top-4 right-4 z-50 flex gap-4">
       {session && (
         <Button
           variant="ghost"
