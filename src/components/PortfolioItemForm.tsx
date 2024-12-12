@@ -13,8 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { ImageUploadField } from "./ImageUploadField";
 
 type PortfolioFormData = {
   header: string;
@@ -32,10 +31,6 @@ type PortfolioItemFormProps = {
 export const PortfolioItemForm = ({ initialData, id }: PortfolioItemFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isUploading, setIsUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(
-    initialData?.image_url || null
-  );
 
   const form = useForm<PortfolioFormData>({
     defaultValues: initialData || {
@@ -46,50 +41,6 @@ export const PortfolioItemForm = ({ initialData, id }: PortfolioItemFormProps) =
       image_url: "",
     },
   });
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setIsUploading(true);
-
-      // Create a unique file name
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      // Upload the file to Supabase storage
-      const { data, error: uploadError } = await supabase.storage
-        .from("portfolio_images")
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      // Get the public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("portfolio_images").getPublicUrl(filePath);
-
-      // Update the form with the new image URL
-      form.setValue("image_url", publicUrl);
-      setPreviewUrl(publicUrl);
-
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully",
-      });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast({
-        title: "Error",
-        description: "Failed to upload image",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const onSubmit = async (data: PortfolioFormData) => {
     try {
@@ -195,42 +146,9 @@ export const PortfolioItemForm = ({ initialData, id }: PortfolioItemFormProps) =
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="image_url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image</FormLabel>
-              <FormControl>
-                <div className="space-y-4">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={isUploading}
-                  />
-                  {isUploading && (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Uploading...</span>
-                    </div>
-                  )}
-                  {previewUrl && (
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="max-w-xs rounded-lg shadow-md"
-                    />
-                  )}
-                  <Input type="hidden" {...field} />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <ImageUploadField form={form} initialImageUrl={initialData?.image_url} />
 
-        <Button type="submit" disabled={isUploading}>
+        <Button type="submit">
           {id ? "Update" : "Create"} Portfolio Item
         </Button>
       </form>
