@@ -90,8 +90,8 @@ export const PortfolioCard = ({
                   <GripVertical className="h-6 w-6 text-gray-400" />
                 </div>
               )}
-              <div className={`grid md:grid-cols-2 gap-10 items-start ${imageOnRight ? 'md:flex md:flex-row-reverse' : ''}`}>
-                <div className="p-6">
+              <div className="md:flex gap-10 items-start">
+                <div className={`flex-1 p-6 ${imageOnRight ? 'order-2' : 'order-1'}`}>
                   <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
                     {isEditing ? (
                       <FormProvider {...form}>
@@ -109,7 +109,7 @@ export const PortfolioCard = ({
                     )}
                   </div>
                 </div>
-                <div className="p-12 flex flex-col justify-between">
+                <div className={`flex-1 p-12 flex flex-col justify-between ${imageOnRight ? 'order-1' : 'order-2'}`}>
                   {isEditing ? (
                     <>
                       <EditablePortfolioContent form={form} item={item} />
