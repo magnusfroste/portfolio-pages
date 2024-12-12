@@ -162,9 +162,6 @@ const Dashboard = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <Button onClick={() => navigate("/dashboard/cards")}>
-          Manage Portfolio Cards
-        </Button>
       </div>
 
       <DashboardStats
