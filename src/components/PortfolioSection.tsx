@@ -17,7 +17,11 @@ export const PortfolioSection = () => {
   const { toast } = useToast();
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Add a small threshold to prevent accidental drags
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -26,6 +30,7 @@ export const PortfolioSection = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      console.log('Session status:', session ? 'Logged in' : 'Not logged in');
     });
 
     const {
@@ -47,13 +52,19 @@ export const PortfolioSection = () => {
   } = usePortfolioItems(session);
 
   const handleDragEnd = async (event: DragEndEvent) => {
+    console.log('Drag end event:', event);
     const { active, over } = event;
     
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id) {
+      console.log('No valid drop target or same position');
+      return;
+    }
 
+    console.log('Reordering from', active.id, 'to', over.id);
     const oldIndex = portfolioItems.findIndex(item => item.id === active.id);
     const newIndex = portfolioItems.findIndex(item => item.id === over.id);
     
+    console.log('Old index:', oldIndex, 'New index:', newIndex);
     await reorderItems(oldIndex, newIndex);
   };
 
