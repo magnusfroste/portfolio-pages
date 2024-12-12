@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { LogIn, LogOut, LayoutDashboard } from "lucide-react";
+import { LogIn, LogOut, LayoutDashboard, Home } from "lucide-react";
 
 export const Navigation = () => {
   const navigate = useNavigate();
@@ -37,15 +37,26 @@ export const Navigation = () => {
   return (
     <div className="fixed top-4 right-4 z-50 flex gap-4">
       {session && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2"
-        >
-          <LayoutDashboard className="h-4 w-4" />
-          Dashboard
-        </Button>
+        <>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2"
+          >
+            <Home className="h-4 w-4" />
+            Home
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </>
       )}
       <Button
         variant="ghost"
