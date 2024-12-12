@@ -1,34 +1,39 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-interface ProjectDialogProps {
+type PortfolioCard = {
+  id: number;
+  header: string;
+  description: string;
+  link: string;
+  image_url: string;
+  sort_order: number;
+};
+
+type ProjectDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  project: {
-    title: string;
-    demoLink: string;
-  } | null;
-}
+  project: PortfolioCard | null;
+};
 
 export const ProjectDialog = ({ isOpen, onClose, project }: ProjectDialogProps) => {
   if (!project) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90vw] w-[1200px] h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>{project.title}</DialogTitle>
-        </DialogHeader>
-        <div className="flex-1 h-full min-h-[500px] mt-4">
-          <iframe
-            src={project.demoLink}
-            className="w-full h-full border rounded-lg"
-            title={project.title}
-          />
+      <DialogContent className="max-w-4xl">
+        <div className="grid gap-4">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">{project.header}</h2>
+            <p className="text-zinc-500 dark:text-zinc-400">{project.description}</p>
+          </div>
+          <div className="aspect-video overflow-hidden rounded-lg">
+            <iframe
+              src={project.link}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
