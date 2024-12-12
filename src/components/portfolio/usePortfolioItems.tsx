@@ -40,7 +40,12 @@ export const usePortfolioItems = (session: any) => {
       // Update the sort_order of all items
       const updates = newItems.map((item, index) => ({
         id: item.id,
+        header: item.header,
+        description: item.description,
+        link: item.link,
+        image_url: item.image_url,
         sort_order: index,
+        user_id: item.user_id
       }));
 
       const { error } = await supabase
