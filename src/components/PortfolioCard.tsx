@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Edit, Save, X, MoreVertical } from "lucide-react";
+import { ExternalLink, Edit, Save, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { ImageUploadField } from "./ImageUploadField";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -56,7 +56,9 @@ export const PortfolioCard = ({
               <div className="p-6">
                 <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
                   {isEditing ? (
-                    <ImageUploadField form={form} initialImageUrl={item.image_url} />
+                    <FormProvider {...form}>
+                      <ImageUploadField form={form} initialImageUrl={item.image_url} />
+                    </FormProvider>
                   ) : (
                     item.image_url && (
                       <img
