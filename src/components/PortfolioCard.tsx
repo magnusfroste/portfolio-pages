@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Edit, Save, X } from "lucide-react";
+import { ExternalLink, Edit, Save, X, Link } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
@@ -79,6 +79,7 @@ export const PortfolioCard = ({
                         {...form.register('header')}
                         defaultValue={item.header}
                         className="text-2xl font-bold mb-6"
+                        placeholder="Enter title"
                       />
                     ) : (
                       <CardTitle className="text-2xl mb-6">{item.header}</CardTitle>
@@ -86,11 +87,23 @@ export const PortfolioCard = ({
                   </CardHeader>
                   <CardContent className="p-0">
                     {isEditing ? (
-                      <Textarea
-                        {...form.register('description')}
-                        defaultValue={item.description}
-                        className="mb-10 text-lg leading-relaxed"
-                      />
+                      <>
+                        <Textarea
+                          {...form.register('description')}
+                          defaultValue={item.description}
+                          className="mb-6 text-lg leading-relaxed"
+                          placeholder="Enter description"
+                        />
+                        <div className="flex items-center space-x-2 mb-10">
+                          <Link className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                            {...form.register('link')}
+                            defaultValue={item.link}
+                            placeholder="Enter project URL"
+                            className="flex-1"
+                          />
+                        </div>
+                      </>
                     ) : (
                       <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
                         {item.description}
@@ -102,7 +115,7 @@ export const PortfolioCard = ({
                   {session && (
                     <>
                       {isEditing ? (
-                        <>
+                        <div className="flex gap-4">
                           <Button
                             variant="default"
                             onClick={() => onSave(form.getValues())}
@@ -119,26 +132,30 @@ export const PortfolioCard = ({
                             <X className="h-4 w-4 mr-2" />
                             Cancel
                           </Button>
-                        </>
+                        </div>
                       ) : null}
                     </>
                   )}
-                  <Button
-                    variant="default"
-                    className="w-fit"
-                    onClick={onClick}
-                  >
-                    View in App
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-fit"
-                    asChild
-                  >
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">
-                      Open in New Tab <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
+                  {!isEditing && (
+                    <>
+                      <Button
+                        variant="default"
+                        className="w-fit"
+                        onClick={onClick}
+                      >
+                        View in App
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-fit"
+                        asChild
+                      >
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          Open in New Tab <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
