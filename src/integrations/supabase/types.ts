@@ -109,6 +109,7 @@ export type Database = {
           message: string
           name: string
           status: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -117,6 +118,7 @@ export type Database = {
           message: string
           name: string
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -125,6 +127,7 @@ export type Database = {
           message?: string
           name?: string
           status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -225,6 +228,7 @@ export type Database = {
           image_url: string | null
           link: string
           sort_order: number
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -234,6 +238,7 @@ export type Database = {
           image_url?: string | null
           link: string
           sort_order?: number
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -243,6 +248,7 @@ export type Database = {
           image_url?: string | null
           link?: string
           sort_order?: number
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -251,18 +257,21 @@ export type Database = {
           clicked_at: string | null
           id: number
           project_title: string
+          user_id: string | null
           visitor_ip: string | null
         }
         Insert: {
           clicked_at?: string | null
           id?: number
           project_title: string
+          user_id?: string | null
           visitor_ip?: string | null
         }
         Update: {
           clicked_at?: string | null
           id?: number
           project_title?: string
+          user_id?: string | null
           visitor_ip?: string | null
         }
         Relationships: []
