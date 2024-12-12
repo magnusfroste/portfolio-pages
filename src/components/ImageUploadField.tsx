@@ -14,7 +14,14 @@ type ImageUploadFieldProps = {
 export const ImageUploadField = ({ form, initialImageUrl }: ImageUploadFieldProps) => {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl || null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Set initial preview URL when component mounts or when initialImageUrl changes
+  useState(() => {
+    if (initialImageUrl) {
+      setPreviewUrl(initialImageUrl);
+    }
+  });
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
