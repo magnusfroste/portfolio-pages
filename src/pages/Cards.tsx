@@ -2,16 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ArrowLeft } from "lucide-react";
+import { PlusCircle, ArrowLeft, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type PortfolioCard = {
   id: number;
@@ -86,64 +80,86 @@ const Cards = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <Button 
-            variant="outline" 
-            size="icon" 
-            onClick={() => navigate("/dashboard")}
-          >
-            <ArrowLeft className="h-4 w-4" />
+    <section className="py-20 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-12">
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={() => navigate("/dashboard")}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-2xl font-bold">Portfolio Cards Management</h1>
+          </div>
+          <Button onClick={() => navigate("/dashboard/new")}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add New Item
           </Button>
-          <h1 className="text-2xl font-bold">Portfolio Cards Management</h1>
         </div>
-        <Button onClick={() => navigate("/dashboard/new")}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add New Item
-        </Button>
+        
+        <div className="space-y-8">
+          {portfolioItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+            >
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div className="grid md:grid-cols-2 gap-10 items-start">
+                  <div className="p-6">
+                    <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
+                      <img
+                        src={item.image_url || '/placeholder.svg'}
+                        alt={item.header}
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                      />
+                    </div>
+                  </div>
+                  <div className="p-12 flex flex-col justify-between">
+                    <div>
+                      <CardHeader className="p-0">
+                        <CardTitle className="text-2xl mb-6">{item.header}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+                          {item.description}
+                        </p>
+                      </CardContent>
+                    </div>
+                    <div className="flex gap-4">
+                      <Button
+                        variant="default"
+                        onClick={() => navigate(`/dashboard/edit/${item.id}`)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-fit"
+                        asChild
+                      >
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          Open in New Tab <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Sort Order</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {portfolioItems.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.header}</TableCell>
-                <TableCell className="max-w-md truncate">
-                  {item.description}
-                </TableCell>
-                <TableCell>{item.sort_order}</TableCell>
-                <TableCell className="space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate(`/dashboard/edit/${item.id}`)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+    </section>
   );
 };
 
