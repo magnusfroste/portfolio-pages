@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AboutData, Feature } from "@/types/about";
+import { AboutData } from "@/types/about";
 import { useToast } from "@/components/ui/use-toast";
 
 export const useAboutData = () => {
@@ -19,6 +19,7 @@ export const useAboutData = () => {
 
   const fetchAboutData = async () => {
     try {
+      // First try to get existing data
       let { data, error } = await supabase
         .from('portfolio_about')
         .select('*')
@@ -26,50 +27,24 @@ export const useAboutData = () => {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // No data exists, let's create the default row
-          const defaultData = {
-            id: 1,
-            title: 'About Me',
-            main_description: [
-              'As a seasoned technology leader and innovator, I\'ve dedicated my career to helping organizations navigate the rapidly evolving tech landscape.',
-              'With extensive experience in rapid application prototyping and product development, I excel at turning complex ideas into tangible solutions.'
-            ],
-            features: [
-              {
-                title: 'AI Integration',
-                description: 'Pioneering AI solutions that transform business operations and create competitive advantages.',
-                icon: 'Brain'
-              },
-              {
-                title: 'Product Strategy',
-                description: '20+ years of experience in product management and successful market launches across different sectors.',
-                icon: 'Rocket'
-              },
-              {
-                title: 'Technology Leadership',
-                description: 'Proven track record as CTO, leading teams and implementing cutting-edge technology solutions.',
-                icon: 'Command'
-              }
-            ]
-          };
-
-          const { data: insertedData, error: insertError } = await supabase
+          // If no data exists, create a new row (Supabase will use the default values)
+          const { data: newData, error: insertError } = await supabase
             .from('portfolio_about')
-            .insert(defaultData)
+            .insert({ id: 1 })
             .select()
             .single();
 
           if (insertError) throw insertError;
-          data = insertedData;
+          data = newData;
         } else {
           throw error;
         }
       }
 
-      // Parse the features JSON into Feature[] type
+      // Parse the features JSON if it's a string
       const parsedData: AboutData = {
         ...data,
-        features: Array.isArray(data.features) ? data.features : JSON.parse(data.features as string)
+        features: typeof data.features === 'string' ? JSON.parse(data.features) : data.features
       };
 
       setAboutData(parsedData);
