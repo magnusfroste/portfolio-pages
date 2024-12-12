@@ -189,6 +189,36 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_about: {
+        Row: {
+          created_at: string | null
+          features: Json
+          id: number
+          main_description: string[]
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          features?: Json
+          id?: number
+          main_description?: string[]
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          features?: Json
+          id?: number
+          main_description?: string[]
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       portfolio_cards: {
         Row: {
           created_at: string | null
