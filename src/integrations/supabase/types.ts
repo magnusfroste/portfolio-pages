@@ -273,6 +273,33 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_content: {
+        Row: {
+          content: Json
+          content_type: string
+          created_at: string | null
+          id: number
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          content: Json
+          content_type: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          content?: Json
+          content_type?: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       portfolio_messages: {
         Row: {
           created_at: string | null
