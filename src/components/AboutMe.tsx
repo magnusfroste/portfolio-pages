@@ -26,6 +26,7 @@ export const AboutMe = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(aboutMe);
 
+  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -34,7 +35,10 @@ export const AboutMe = () => {
     );
   }
 
-  if (!aboutMe) return null;
+  // If there's no data, show nothing
+  if (!aboutMe?.mainText || !aboutMe?.highlights) {
+    return null;
+  }
 
   const handleSave = async () => {
     if (await updateAboutMe(editedContent)) {
@@ -53,6 +57,11 @@ export const AboutMe = () => {
     newMainText[index] = value;
     setEditedContent({ ...editedContent, mainText: newMainText });
   };
+
+  // Update editedContent when aboutMe changes
+  if (!editedContent && aboutMe) {
+    setEditedContent(aboutMe);
+  }
 
   return (
     <section className="py-20 px-4 bg-secondary/30">
@@ -77,44 +86,46 @@ export const AboutMe = () => {
                 <DialogHeader>
                   <DialogTitle>Edit About Me Section</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-6 py-4">
-                  <div className="space-y-4">
-                    <h3 className="font-medium">Main Text</h3>
-                    {editedContent.mainText.map((text, index) => (
-                      <Textarea
-                        key={index}
-                        value={text}
-                        onChange={(e) => updateMainText(index, e.target.value)}
-                        className="min-h-[100px]"
-                      />
-                    ))}
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="font-medium">Highlights</h3>
-                    {editedContent.highlights.map((highlight, index) => (
-                      <div key={index} className="space-y-2 p-4 border rounded-lg">
-                        <Input
-                          value={highlight.title}
-                          onChange={(e) => updateHighlight(index, 'title', e.target.value)}
-                          placeholder="Title"
-                        />
+                {editedContent && (
+                  <div className="space-y-6 py-4">
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Main Text</h3>
+                      {editedContent.mainText.map((text, index) => (
                         <Textarea
-                          value={highlight.description}
-                          onChange={(e) => updateHighlight(index, 'description', e.target.value)}
-                          placeholder="Description"
+                          key={index}
+                          value={text}
+                          onChange={(e) => updateMainText(index, e.target.value)}
+                          className="min-h-[100px]"
                         />
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Highlights</h3>
+                      {editedContent.highlights.map((highlight, index) => (
+                        <div key={index} className="space-y-2 p-4 border rounded-lg">
+                          <Input
+                            value={highlight.title}
+                            onChange={(e) => updateHighlight(index, 'title', e.target.value)}
+                            placeholder="Title"
+                          />
+                          <Textarea
+                            value={highlight.description}
+                            onChange={(e) => updateHighlight(index, 'description', e.target.value)}
+                            placeholder="Description"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setIsEditing(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleSave}>
+                        Save Changes
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleSave}>
-                      Save Changes
-                    </Button>
-                  </div>
-                </div>
+                )}
               </DialogContent>
             </Dialog>
           )}
