@@ -25,7 +25,10 @@ export const useExpertiseAreas = (session: any) => {
         .single();
 
       if (error) throw error;
-      setExpertiseAreas(data?.content || []);
+      
+      // Ensure we're setting an array of expertise areas
+      const areas = data?.content || [];
+      setExpertiseAreas(areas as ExpertiseArea[]);
     } catch (error) {
       console.error('Error fetching expertise areas:', error);
       toast({
@@ -49,15 +52,28 @@ export const useExpertiseAreas = (session: any) => {
     }
 
     try {
-      const { error } = await supabase
+      // First, try to update if a record exists
+      let { error: updateError } = await supabase
         .from('portfolio_content')
-        .upsert({
-          content_type: 'expertise_areas',
+        .update({
           content: updatedAreas,
-          user_id: session.user.id
-        });
+          updated_at: new Date().toISOString()
+        })
+        .eq('content_type', 'expertise_areas')
+        .eq('user_id', session.user.id);
 
-      if (error) throw error;
+      // If no record was updated (doesn't exist yet), insert a new one
+      if (updateError) {
+        const { error: insertError } = await supabase
+          .from('portfolio_content')
+          .insert({
+            content_type: 'expertise_areas',
+            content: updatedAreas,
+            user_id: session.user.id
+          });
+
+        if (insertError) throw insertError;
+      }
 
       setExpertiseAreas(updatedAreas);
       return true;
