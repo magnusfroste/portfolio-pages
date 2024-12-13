@@ -6,7 +6,7 @@ import { ImageUploadField } from "./ImageUploadField";
 import { useForm, FormProvider } from "react-hook-form";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Image as ImageIcon } from "lucide-react";
 
 type CarouselImage = {
   id: number;
@@ -111,8 +111,9 @@ export const ImageCarousel = () => {
   return (
     <section className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-          Gallery
+        <h2 className="text-3xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent flex items-center justify-center gap-3">
+          <ImageIcon className="w-10 h-10 text-accent" />
+          Featured
         </h2>
 
         {images.length > 0 ? (
@@ -144,7 +145,7 @@ export const ImageCarousel = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 max-w-md mx-auto space-y-4">
               <ImageUploadField form={form} />
               <Button type="submit" className="w-full">
-                Add to Carousel
+                Add to Featured
               </Button>
             </form>
           </FormProvider>
