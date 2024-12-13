@@ -72,7 +72,7 @@ export const AboutMe = () => {
         className="max-w-6xl mx-auto"
       >
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+          <h2 className="text-3xl font-bold text-center w-full bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             About Me
           </h2>
           {session && (
@@ -136,7 +136,7 @@ export const AboutMe = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="space-y-6"
+            className="space-y-6 text-center"
           >
             {aboutMe.mainText.map((text, index) => (
               <p key={index} className="text-lg leading-relaxed">
