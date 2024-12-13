@@ -99,6 +99,45 @@ export const useExpertiseAreas = (session: any) => {
     }
   };
 
+  const updateExpertiseArea = async (index: number, updatedArea: ExpertiseArea) => {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to update expertise areas",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const updatedAreas = [...expertiseAreas];
+      updatedAreas[index] = updatedArea;
+
+      const { error } = await supabase
+        .from('portfolio_content')
+        .upsert({
+          content_type: 'expertise_areas',
+          content: updatedAreas,
+          user_id: session.user.id
+        });
+
+      if (error) throw error;
+
+      setExpertiseAreas(updatedAreas);
+      toast({
+        title: "Success",
+        description: "Expertise area updated successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update expertise area",
+        variant: "destructive",
+      });
+    }
+  };
+
   const removeExpertiseArea = async (index: number) => {
     if (!session?.user?.id) {
       toast({
@@ -182,6 +221,7 @@ export const useExpertiseAreas = (session: any) => {
     isLoading,
     addExpertiseArea,
     removeExpertiseArea,
+    updateExpertiseArea,
     reorderExpertiseAreas,
   };
 };

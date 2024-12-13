@@ -28,6 +28,7 @@ export const ExpertiseCards = () => {
     isLoading,
     addExpertiseArea,
     removeExpertiseArea,
+    updateExpertiseArea,
     reorderExpertiseAreas,
   } = useExpertiseAreas(session);
 
@@ -89,6 +90,7 @@ export const ExpertiseCards = () => {
                   area={area}
                   index={index}
                   onRemove={() => removeExpertiseArea(index)}
+                  onUpdate={(updatedArea) => updateExpertiseArea(index, updatedArea)}
                   session={session}
                 />
               ))}
