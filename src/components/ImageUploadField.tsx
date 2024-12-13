@@ -28,16 +28,28 @@ export const ImageUploadField = ({ form, initialImageUrl }: ImageUploadFieldProp
 
     try {
       setIsUploading(true);
+
+      // Check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("You must be logged in to upload images");
+      }
+
       const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { data, error: uploadError } = await supabase.storage
+      // Upload the file
+      const { error: uploadError } = await supabase.storage
         .from("portfolio_images")
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: false,
+          contentType: file.type,
+        });
 
       if (uploadError) throw uploadError;
 
+      // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from("portfolio_images")
         .getPublicUrl(filePath);
@@ -53,7 +65,7 @@ export const ImageUploadField = ({ form, initialImageUrl }: ImageUploadFieldProp
       console.error("Error uploading image:", error);
       toast({
         title: "Error",
-        description: "Failed to upload image",
+        description: error instanceof Error ? error.message : "Failed to upload image",
         variant: "destructive",
       });
     } finally {
