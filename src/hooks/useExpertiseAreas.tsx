@@ -23,45 +23,30 @@ export const useExpertiseAreas = (session: any) => {
         .from('portfolio_content')
         .select('content')
         .eq('content_type', 'expertise_areas')
-        .maybeSingle();
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching expertise areas:', error);
+        throw error;
+      }
       
       console.log('Received data:', data);
       
-      // If no data exists yet, initialize with default expertise areas
-      if (!data) {
-        const defaultAreas: ExpertiseArea[] = [
-          {
-            title: "AI Integration",
-            description: "Expertise in integrating AI solutions into existing systems and workflows"
-          },
-          {
-            title: "Innovation Strategy",
-            description: "Developing and implementing innovative solutions for business growth"
-          },
-          {
-            title: "Product Development",
-            description: "End-to-end product development and management"
-          }
-        ];
-        
-        // Insert default areas
-        await updateExpertiseAreas(defaultAreas);
-        setExpertiseAreas(defaultAreas);
+      if (data && data.content) {
+        console.log('Setting expertise areas:', data.content);
+        setExpertiseAreas(data.content);
       } else {
-        // Ensure we're setting an array of expertise areas
-        const areas = data.content || [];
-        console.log('Setting expertise areas:', areas);
-        setExpertiseAreas(areas as ExpertiseArea[]);
+        console.log('No expertise areas found');
+        setExpertiseAreas([]);
       }
     } catch (error) {
-      console.error('Error fetching expertise areas:', error);
+      console.error('Error in fetchExpertiseAreas:', error);
       toast({
         title: "Error",
         description: "Failed to fetch expertise areas",
         variant: "destructive",
       });
+      setExpertiseAreas([]);
     } finally {
       setIsLoading(false);
     }
@@ -80,30 +65,19 @@ export const useExpertiseAreas = (session: any) => {
     try {
       console.log('Updating expertise areas:', updatedAreas);
       
-      // First, try to update if a record exists
-      let { error: updateError } = await supabase
+      const { data, error } = await supabase
         .from('portfolio_content')
         .update({
           content: updatedAreas,
           updated_at: new Date().toISOString()
         })
         .eq('content_type', 'expertise_areas')
-        .eq('user_id', session.user.id);
+        .select()
+        .single();
 
-      // If no record was updated (doesn't exist yet), insert a new one
-      if (updateError) {
-        console.log('No existing record found, creating new one');
-        const { error: insertError } = await supabase
-          .from('portfolio_content')
-          .insert({
-            content_type: 'expertise_areas',
-            content: updatedAreas,
-            user_id: session.user.id
-          });
+      if (error) throw error;
 
-        if (insertError) throw insertError;
-      }
-
+      console.log('Update successful:', data);
       setExpertiseAreas(updatedAreas);
       return true;
     } catch (error) {
