@@ -20,13 +20,13 @@ export const ProjectDialog = ({ isOpen, onClose, project }: ProjectDialogProps) 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-        <div className="grid gap-4 flex-1">
+      <DialogContent className="max-w-4xl">
+        <div className="grid gap-4">
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">{project.header}</h2>
             <p className="text-zinc-500 dark:text-zinc-400">{project.description}</p>
           </div>
-          <div className="flex-1 rounded-lg overflow-hidden">
+          <div className="aspect-video overflow-hidden rounded-lg">
             <iframe
               src={project.link}
               className="w-full h-full"
