@@ -24,8 +24,12 @@ export const useExpertiseAreas = (session: any) => {
         .select('*')
         .order('sort_order', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching expertise areas:', error);
+        throw error;
+      }
       
+      console.log('Fetched expertise areas:', data);
       setExpertiseAreas(data || []);
     } catch (error) {
       console.error('Error:', error);

@@ -71,42 +71,44 @@ export const ExpertiseCards = () => {
 
   return (
     <section className="py-20 px-4">
-      <h2 className="text-3xl font-bold text-center mb-12">Areas of Expertise</h2>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          <SortableContext 
-            items={expertiseAreas.map((_, index) => index)}
-            strategy={verticalListSortingStrategy}
-          >
-            {expertiseAreas.map((area, index) => (
-              <ExpertiseCard
-                key={index}
-                area={area}
-                index={index}
-                onRemove={() => removeExpertiseArea(index)}
-                session={session}
-              />
-            ))}
-          </SortableContext>
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12">Areas of Expertise</h2>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <SortableContext 
+              items={expertiseAreas.map((_, index) => index)}
+              strategy={verticalListSortingStrategy}
+            >
+              {expertiseAreas.map((area, index) => (
+                <ExpertiseCard
+                  key={index}
+                  area={area}
+                  index={index}
+                  onRemove={() => removeExpertiseArea(index)}
+                  session={session}
+                />
+              ))}
+            </SortableContext>
 
-          {session && (
-            <AddExpertiseCard
-              isAdding={isAdding}
-              newArea={newArea}
-              onAdd={handleSubmit}
-              onCancel={() => {
-                setIsAdding(!isAdding);
-                setNewArea({ title: "", description: "" });
-              }}
-              onChange={handleChange}
-            />
-          )}
-        </div>
-      </DndContext>
+            {session && (
+              <AddExpertiseCard
+                isAdding={isAdding}
+                newArea={newArea}
+                onAdd={handleSubmit}
+                onCancel={() => {
+                  setIsAdding(!isAdding);
+                  setNewArea({ title: "", description: "" });
+                }}
+                onChange={handleChange}
+              />
+            )}
+          </div>
+        </DndContext>
+      </div>
     </section>
   );
 };
