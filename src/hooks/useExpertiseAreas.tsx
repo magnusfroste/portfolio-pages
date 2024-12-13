@@ -7,6 +7,12 @@ export type ExpertiseArea = {
   description: string;
 };
 
+type PortfolioContent = {
+  content: ExpertiseArea[];
+  content_type: string;
+  user_id?: string;
+};
+
 export const useExpertiseAreas = (session: any) => {
   const [expertiseAreas, setExpertiseAreas] = useState<ExpertiseArea[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +37,9 @@ export const useExpertiseAreas = (session: any) => {
       }
       
       console.log('Fetched expertise areas:', data);
-      // The content column contains the array of expertise areas
-      setExpertiseAreas(data?.content || []);
+      // Ensure data.content is an array of ExpertiseArea before setting state
+      const content = data?.content as ExpertiseArea[];
+      setExpertiseAreas(content || []);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -63,7 +70,7 @@ export const useExpertiseAreas = (session: any) => {
         .eq('content_type', 'expertise_areas')
         .single();
 
-      const currentAreas = currentData?.content || [];
+      const currentAreas = (currentData?.content as ExpertiseArea[]) || [];
       const updatedAreas = [...currentAreas, newArea];
 
       // Update the content with the new area
