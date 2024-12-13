@@ -20,9 +20,10 @@ export const useExpertiseAreas = (session: any) => {
     try {
       console.log('Fetching expertise areas...');
       const { data, error } = await supabase
-        .from('expertise_areas')
-        .select('*')
-        .order('sort_order', { ascending: true });
+        .from('portfolio_content')
+        .select('content')
+        .eq('content_type', 'expertise_areas')
+        .single();
 
       if (error) {
         console.error('Error fetching expertise areas:', error);
@@ -30,7 +31,8 @@ export const useExpertiseAreas = (session: any) => {
       }
       
       console.log('Fetched expertise areas:', data);
-      setExpertiseAreas(data || []);
+      // The content column contains the array of expertise areas
+      setExpertiseAreas(data?.content || []);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -54,17 +56,28 @@ export const useExpertiseAreas = (session: any) => {
     }
 
     try {
+      // First get the current areas
+      const { data: currentData } = await supabase
+        .from('portfolio_content')
+        .select('content')
+        .eq('content_type', 'expertise_areas')
+        .single();
+
+      const currentAreas = currentData?.content || [];
+      const updatedAreas = [...currentAreas, newArea];
+
+      // Update the content with the new area
       const { error } = await supabase
-        .from('expertise_areas')
-        .insert([{
-          ...newArea,
-          user_id: session.user.id,
-          sort_order: expertiseAreas.length
-        }]);
+        .from('portfolio_content')
+        .upsert({
+          content_type: 'expertise_areas',
+          content: updatedAreas,
+          user_id: session.user.id
+        });
 
       if (error) throw error;
 
-      await fetchExpertiseAreas();
+      setExpertiseAreas(updatedAreas);
       toast({
         title: "Success",
         description: "Expertise area added successfully",
@@ -90,14 +103,19 @@ export const useExpertiseAreas = (session: any) => {
     }
 
     try {
+      const updatedAreas = expertiseAreas.filter((_, i) => i !== index);
+
       const { error } = await supabase
-        .from('expertise_areas')
-        .delete()
-        .eq('sort_order', index);
+        .from('portfolio_content')
+        .upsert({
+          content_type: 'expertise_areas',
+          content: updatedAreas,
+          user_id: session.user.id
+        });
 
       if (error) throw error;
 
-      await fetchExpertiseAreas();
+      setExpertiseAreas(updatedAreas);
       toast({
         title: "Success",
         description: "Expertise area removed successfully",
@@ -127,14 +145,13 @@ export const useExpertiseAreas = (session: any) => {
       const [movedArea] = updatedAreas.splice(oldIndex, 1);
       updatedAreas.splice(newIndex, 0, movedArea);
 
-      const updates = updatedAreas.map((area, index) => ({
-        ...area,
-        sort_order: index,
-      }));
-
       const { error } = await supabase
-        .from('expertise_areas')
-        .upsert(updates);
+        .from('portfolio_content')
+        .upsert({
+          content_type: 'expertise_areas',
+          content: updatedAreas,
+          user_id: session.user.id
+        });
 
       if (error) throw error;
 
