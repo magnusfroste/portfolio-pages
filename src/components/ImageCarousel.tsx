@@ -70,10 +70,15 @@ export const ImageCarousel = () => {
 
   const onSubmit = async (values: { image_url: string; caption: string }) => {
     try {
+      if (!session?.user?.id) {
+        throw new Error("You must be logged in to add images");
+      }
+
       const { error } = await supabase.from("portfolio_carousel").insert({
         image_url: values.image_url,
         caption: values.caption,
         sort_order: images.length,
+        user_id: session.user.id, // Add the user_id here
       });
 
       if (error) throw error;
@@ -85,11 +90,11 @@ export const ImageCarousel = () => {
 
       form.reset();
       fetchImages();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error adding image:", error);
       toast({
         title: "Error",
-        description: "Failed to add image to carousel",
+        description: error.message || "Failed to add image to carousel",
         variant: "destructive",
       });
     }
