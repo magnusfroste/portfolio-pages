@@ -16,7 +16,6 @@ export const ImageUploadField = ({ form, initialImageUrl }: ImageUploadFieldProp
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Set initial preview URL when component mounts or when initialImageUrl changes
   useEffect(() => {
     if (initialImageUrl) {
       setPreviewUrl(initialImageUrl);

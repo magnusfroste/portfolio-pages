@@ -3,7 +3,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageUploadField } from "./ImageUploadField";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { Loader2 } from "lucide-react";
@@ -117,12 +117,14 @@ export const ImageCarousel = () => {
           <p className="text-center text-muted-foreground">No images in the carousel yet.</p>
         )}
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 max-w-md mx-auto space-y-4">
-          <ImageUploadField form={form} />
-          <Button type="submit" className="w-full">
-            Add to Carousel
-          </Button>
-        </form>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 max-w-md mx-auto space-y-4">
+            <ImageUploadField form={form} />
+            <Button type="submit" className="w-full">
+              Add to Carousel
+            </Button>
+          </form>
+        </FormProvider>
       </div>
     </section>
   );
