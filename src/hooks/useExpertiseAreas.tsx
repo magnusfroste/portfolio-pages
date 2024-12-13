@@ -18,17 +18,43 @@ export const useExpertiseAreas = (session: any) => {
 
   const fetchExpertiseAreas = async () => {
     try {
+      console.log('Fetching expertise areas...');
       const { data, error } = await supabase
         .from('portfolio_content')
         .select('content')
         .eq('content_type', 'expertise_areas')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       
-      // Ensure we're setting an array of expertise areas
-      const areas = data?.content || [];
-      setExpertiseAreas(areas as ExpertiseArea[]);
+      console.log('Received data:', data);
+      
+      // If no data exists yet, initialize with default expertise areas
+      if (!data) {
+        const defaultAreas: ExpertiseArea[] = [
+          {
+            title: "AI Integration",
+            description: "Expertise in integrating AI solutions into existing systems and workflows"
+          },
+          {
+            title: "Innovation Strategy",
+            description: "Developing and implementing innovative solutions for business growth"
+          },
+          {
+            title: "Product Development",
+            description: "End-to-end product development and management"
+          }
+        ];
+        
+        // Insert default areas
+        await updateExpertiseAreas(defaultAreas);
+        setExpertiseAreas(defaultAreas);
+      } else {
+        // Ensure we're setting an array of expertise areas
+        const areas = data.content || [];
+        console.log('Setting expertise areas:', areas);
+        setExpertiseAreas(areas as ExpertiseArea[]);
+      }
     } catch (error) {
       console.error('Error fetching expertise areas:', error);
       toast({
@@ -52,6 +78,8 @@ export const useExpertiseAreas = (session: any) => {
     }
 
     try {
+      console.log('Updating expertise areas:', updatedAreas);
+      
       // First, try to update if a record exists
       let { error: updateError } = await supabase
         .from('portfolio_content')
@@ -64,6 +92,7 @@ export const useExpertiseAreas = (session: any) => {
 
       // If no record was updated (doesn't exist yet), insert a new one
       if (updateError) {
+        console.log('No existing record found, creating new one');
         const { error: insertError } = await supabase
           .from('portfolio_content')
           .insert({
