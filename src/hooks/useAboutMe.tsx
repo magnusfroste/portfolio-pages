@@ -39,7 +39,8 @@ export const useAboutMe = (session: any) => {
       console.log('Received about me data:', data);
       
       if (data?.content) {
-        setAboutMe(data.content);
+        // Type assertion to ensure the content matches our expected type
+        setAboutMe(data.content as AboutMeContent);
       }
     } catch (error) {
       console.error('Error in fetchAboutMe:', error);

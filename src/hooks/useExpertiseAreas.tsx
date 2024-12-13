@@ -33,8 +33,9 @@ export const useExpertiseAreas = (session: any) => {
       console.log('Received data:', data);
       
       if (data && data.content) {
+        // Type assertion to ensure the content matches our expected type
+        setExpertiseAreas(data.content as ExpertiseArea[]);
         console.log('Setting expertise areas:', data.content);
-        setExpertiseAreas(data.content);
       } else {
         console.log('No expertise areas found');
         setExpertiseAreas([]);
