@@ -18,6 +18,7 @@ type CarouselImage = {
 export const ImageCarousel = () => {
   const [images, setImages] = useState<CarouselImage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<any>(null);
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
@@ -25,6 +26,22 @@ export const ImageCarousel = () => {
       caption: "",
     },
   });
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchImages = async () => {
     try {
@@ -117,14 +134,16 @@ export const ImageCarousel = () => {
           <p className="text-center text-muted-foreground">No images in the carousel yet.</p>
         )}
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 max-w-md mx-auto space-y-4">
-            <ImageUploadField form={form} />
-            <Button type="submit" className="w-full">
-              Add to Carousel
-            </Button>
-          </form>
-        </FormProvider>
+        {session && (
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 max-w-md mx-auto space-y-4">
+              <ImageUploadField form={form} />
+              <Button type="submit" className="w-full">
+                Add to Carousel
+              </Button>
+            </form>
+          </FormProvider>
+        )}
       </div>
     </section>
   );
