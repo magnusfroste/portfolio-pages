@@ -3,7 +3,6 @@ import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -65,6 +64,19 @@ const Carousel = React.forwardRef<
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+
+    // Auto-advance functionality
+    React.useEffect(() => {
+      if (!api || !opts?.loop) return
+
+      const autoplayInterval = setInterval(() => {
+        api.scrollNext()
+      }, 5000) // Change slide every 5 seconds
+
+      return () => {
+        clearInterval(autoplayInterval)
+      }
+    }, [api, opts?.loop])
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {

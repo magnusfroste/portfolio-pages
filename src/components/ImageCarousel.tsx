@@ -78,7 +78,7 @@ export const ImageCarousel = () => {
         image_url: values.image_url,
         caption: values.caption,
         sort_order: images.length,
-        user_id: session.user.id, // Add the user_id here
+        user_id: session.user.id,
       });
 
       if (error) throw error;
@@ -116,16 +116,16 @@ export const ImageCarousel = () => {
         </h2>
 
         {images.length > 0 ? (
-          <Carousel className="w-full max-w-4xl mx-auto">
+          <Carousel className="w-full max-w-4xl mx-auto" opts={{ loop: true, align: "start", startIndex: 0, duration: 20 }}>
             <CarouselContent>
               {images.map((image) => (
                 <CarouselItem key={image.id}>
                   <Card>
-                    <CardContent className="flex aspect-video items-center justify-center p-0">
+                    <CardContent className="flex aspect-[16/9] items-center justify-center p-0 overflow-hidden">
                       <img
                         src={image.image_url}
                         alt={image.caption || "Gallery image"}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </CardContent>
                   </Card>
