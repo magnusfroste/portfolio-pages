@@ -20,109 +20,131 @@ export const useExpertiseAreas = (session: any) => {
     try {
       console.log('Fetching expertise areas...');
       const { data, error } = await supabase
-        .from('portfolio_content')
-        .select('content')
-        .eq('content_type', 'expertise_areas')
-        .single();
+        .from('expertise_areas')
+        .select('*')
+        .order('sort_order', { ascending: true });
 
-      if (error) {
-        console.error('Error fetching expertise areas:', error);
-        throw error;
-      }
+      if (error) throw error;
       
-      console.log('Received data:', data);
-      
-      if (data && data.content) {
-        // Type assertion to ensure the content matches our expected type
-        setExpertiseAreas(data.content as ExpertiseArea[]);
-        console.log('Setting expertise areas:', data.content);
-      } else {
-        console.log('No expertise areas found');
-        setExpertiseAreas([]);
-      }
+      setExpertiseAreas(data || []);
     } catch (error) {
-      console.error('Error in fetchExpertiseAreas:', error);
+      console.error('Error:', error);
       toast({
         title: "Error",
         description: "Failed to fetch expertise areas",
         variant: "destructive",
       });
-      setExpertiseAreas([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const updateExpertiseAreas = async (updatedAreas: ExpertiseArea[]) => {
+  const addExpertiseArea = async (newArea: ExpertiseArea) => {
     if (!session?.user?.id) {
       toast({
         title: "Error",
-        description: "You must be logged in to update expertise areas",
+        description: "You must be logged in to add expertise areas",
         variant: "destructive",
       });
-      return false;
+      return;
     }
 
     try {
-      console.log('Updating expertise areas:', updatedAreas);
-      
-      const { data, error } = await supabase
-        .from('portfolio_content')
-        .update({
-          content: updatedAreas,
-          updated_at: new Date().toISOString()
-        })
-        .eq('content_type', 'expertise_areas')
-        .select()
-        .single();
+      const { error } = await supabase
+        .from('expertise_areas')
+        .insert([{
+          ...newArea,
+          user_id: session.user.id,
+          sort_order: expertiseAreas.length
+        }]);
 
       if (error) throw error;
 
-      console.log('Update successful:', data);
-      setExpertiseAreas(updatedAreas);
-      return true;
-    } catch (error) {
-      console.error('Error updating expertise areas:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update expertise areas",
-        variant: "destructive",
-      });
-      return false;
-    }
-  };
-
-  const addExpertiseArea = async (newArea: ExpertiseArea) => {
-    const success = await updateExpertiseAreas([...expertiseAreas, newArea]);
-    if (success) {
+      setExpertiseAreas([...expertiseAreas, newArea]);
       toast({
         title: "Success",
         description: "Expertise area added successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add expertise area",
+        variant: "destructive",
       });
     }
   };
 
   const removeExpertiseArea = async (index: number) => {
-    const updatedAreas = expertiseAreas.filter((_, i) => i !== index);
-    const success = await updateExpertiseAreas(updatedAreas);
-    if (success) {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to remove expertise areas",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('expertise_areas')
+        .delete()
+        .eq('sort_order', index);
+
+      if (error) throw error;
+
+      setExpertiseAreas(expertiseAreas.filter((_, i) => i !== index));
       toast({
         title: "Success",
         description: "Expertise area removed successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to remove expertise area",
+        variant: "destructive",
       });
     }
   };
 
   const reorderExpertiseAreas = async (oldIndex: number, newIndex: number) => {
-    const updatedAreas = [...expertiseAreas];
-    const [movedArea] = updatedAreas.splice(oldIndex, 1);
-    updatedAreas.splice(newIndex, 0, movedArea);
-    
-    const success = await updateExpertiseAreas(updatedAreas);
-    if (success) {
+    if (!session?.user?.id) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to reorder expertise areas",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const updatedAreas = [...expertiseAreas];
+      const [movedArea] = updatedAreas.splice(oldIndex, 1);
+      updatedAreas.splice(newIndex, 0, movedArea);
+
+      const updates = updatedAreas.map((area, index) => ({
+        ...area,
+        sort_order: index,
+      }));
+
+      const { error } = await supabase
+        .from('expertise_areas')
+        .upsert(updates);
+
+      if (error) throw error;
+
+      setExpertiseAreas(updatedAreas);
       toast({
         title: "Success",
         description: "Expertise areas reordered successfully",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reorder expertise areas",
+        variant: "destructive",
       });
     }
   };

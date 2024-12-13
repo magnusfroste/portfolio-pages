@@ -101,6 +101,36 @@ export type Database = {
         }
         Relationships: []
       }
+      expertise_areas: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: number
+          sort_order: number
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: number
+          sort_order?: number
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       favourites: {
         Row: {
           classified_id: number
