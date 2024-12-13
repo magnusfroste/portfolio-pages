@@ -60,7 +60,7 @@ export const useExpertiseAreas = (session: any) => {
 
       if (error) throw error;
 
-      setExpertiseAreas([...expertiseAreas, newArea]);
+      await fetchExpertiseAreas();
       toast({
         title: "Success",
         description: "Expertise area added successfully",
@@ -93,7 +93,7 @@ export const useExpertiseAreas = (session: any) => {
 
       if (error) throw error;
 
-      setExpertiseAreas(expertiseAreas.filter((_, i) => i !== index));
+      await fetchExpertiseAreas();
       toast({
         title: "Success",
         description: "Expertise area removed successfully",
