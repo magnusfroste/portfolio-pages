@@ -7,7 +7,7 @@ export const Hero = () => {
       <Navigation />
       
       <div className="container mx-auto text-center">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-rose-600 bg-clip-text text-transparent mb-6">
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-rose-600 bg-clip-text text-transparent mb-12">
           Magnus Froste
         </h1>
         <p className="text-2xl text-gray-600 mb-12">
