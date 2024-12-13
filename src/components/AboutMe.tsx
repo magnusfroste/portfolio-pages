@@ -136,7 +136,7 @@ export const AboutMe = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="space-y-6 text-center"
+            className="space-y-6"
           >
             {aboutMe.mainText.map((text, index) => (
               <p key={index} className="text-lg leading-relaxed">
