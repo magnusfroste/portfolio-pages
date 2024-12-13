@@ -222,6 +222,33 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_carousel: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          id: number
+          image_url: string
+          sort_order: number | null
+          user_id: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          id?: number
+          image_url: string
+          sort_order?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          id?: number
+          image_url?: string
+          sort_order?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       portfolio_clicks: {
         Row: {
           clicked_at: string | null

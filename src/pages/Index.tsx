@@ -4,6 +4,7 @@ import { PortfolioSection } from "@/components/PortfolioSection";
 import { AboutMe } from "@/components/AboutMe";
 import { Contact } from "@/components/Contact";
 import { Navigation } from "@/components/Navigation";
+import { ImageCarousel } from "@/components/ImageCarousel";
 import { Helmet } from "react-helmet";
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
         <Navigation />
         <Hero />
         <AboutMe />
+        <ImageCarousel />
         <ExpertiseCards />
         <PortfolioSection />
         <Contact />
