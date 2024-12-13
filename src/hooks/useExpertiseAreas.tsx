@@ -1,17 +1,9 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { ExpertiseArea } from "./expertise/types";
+import { fetchExpertiseAreas, updateExpertiseAreasInDb } from "./expertise/expertiseApi";
 
-export type ExpertiseArea = {
-  title: string;
-  description: string;
-};
-
-type PortfolioContent = {
-  content: ExpertiseArea[];
-  content_type: string;
-  user_id?: string;
-};
+export type { ExpertiseArea };
 
 export const useExpertiseAreas = (session: any) => {
   const [expertiseAreas, setExpertiseAreas] = useState<ExpertiseArea[]>([]);
@@ -19,199 +11,75 @@ export const useExpertiseAreas = (session: any) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchExpertiseAreas();
-  }, []);
-
-  const fetchExpertiseAreas = async () => {
-    try {
-      console.log('Fetching expertise areas...');
-      const { data, error } = await supabase
-        .from('portfolio_content')
-        .select('content')
-        .eq('content_type', 'expertise_areas')
-        .single();
-
-      if (error) {
-        console.error('Error fetching expertise areas:', error);
-        throw error;
-      }
-      
-      console.log('Fetched expertise areas:', data);
-      const content = data?.content as ExpertiseArea[];
-      setExpertiseAreas(content || []);
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch expertise areas",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const addExpertiseArea = async (newArea: ExpertiseArea) => {
-    if (!session?.user?.id) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to add expertise areas",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const updatedAreas = [...expertiseAreas, newArea];
-
-      const { error } = await supabase
-        .from('portfolio_content')
-        .upsert({
-          content_type: 'expertise_areas',
-          content: updatedAreas,
-          user_id: session.user.id
-        }, {
-          onConflict: 'content_type,user_id'
+    const loadExpertiseAreas = async () => {
+      try {
+        const areas = await fetchExpertiseAreas();
+        setExpertiseAreas(areas);
+      } catch (error) {
+        console.error('Error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch expertise areas",
+          variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      if (error) throw error;
+    loadExpertiseAreas();
+  }, [toast]);
 
-      setExpertiseAreas(updatedAreas);
-      toast({
-        title: "Success",
-        description: "Expertise area added successfully",
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add expertise area",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const updateExpertiseArea = async (index: number, updatedArea: ExpertiseArea) => {
+  const updateDatabase = async (updatedAreas: ExpertiseArea[]) => {
     if (!session?.user?.id) {
       toast({
         title: "Error",
         description: "You must be logged in to update expertise areas",
         variant: "destructive",
       });
-      return;
+      return false;
     }
 
     try {
-      const updatedAreas = [...expertiseAreas];
-      updatedAreas[index] = updatedArea;
-
-      const { error } = await supabase
-        .from('portfolio_content')
-        .upsert({
-          content_type: 'expertise_areas',
-          content: updatedAreas,
-          user_id: session.user.id
-        }, {
-          onConflict: 'content_type,user_id'
-        });
-
-      if (error) throw error;
-
+      await updateExpertiseAreasInDb(updatedAreas, session.user.id);
       setExpertiseAreas(updatedAreas);
       toast({
         title: "Success",
-        description: "Expertise area updated successfully",
+        description: "Expertise areas updated successfully",
       });
+      return true;
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Failed to update expertise area",
+        description: "Failed to update expertise areas",
         variant: "destructive",
       });
+      return false;
     }
+  };
+
+  const addExpertiseArea = async (newArea: ExpertiseArea) => {
+    const updatedAreas = [...expertiseAreas, newArea];
+    return updateDatabase(updatedAreas);
   };
 
   const removeExpertiseArea = async (index: number) => {
-    if (!session?.user?.id) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to remove expertise areas",
-        variant: "destructive",
-      });
-      return;
-    }
+    const updatedAreas = expertiseAreas.filter((_, i) => i !== index);
+    return updateDatabase(updatedAreas);
+  };
 
-    try {
-      const updatedAreas = expertiseAreas.filter((_, i) => i !== index);
-
-      const { error } = await supabase
-        .from('portfolio_content')
-        .upsert({
-          content_type: 'expertise_areas',
-          content: updatedAreas,
-          user_id: session.user.id
-        }, {
-          onConflict: 'content_type,user_id'
-        });
-
-      if (error) throw error;
-
-      setExpertiseAreas(updatedAreas);
-      toast({
-        title: "Success",
-        description: "Expertise area removed successfully",
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to remove expertise area",
-        variant: "destructive",
-      });
-    }
+  const updateExpertiseArea = async (index: number, updatedArea: ExpertiseArea) => {
+    const updatedAreas = [...expertiseAreas];
+    updatedAreas[index] = updatedArea;
+    return updateDatabase(updatedAreas);
   };
 
   const reorderExpertiseAreas = async (oldIndex: number, newIndex: number) => {
-    if (!session?.user?.id) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to reorder expertise areas",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const updatedAreas = [...expertiseAreas];
-      const [movedArea] = updatedAreas.splice(oldIndex, 1);
-      updatedAreas.splice(newIndex, 0, movedArea);
-
-      const { error } = await supabase
-        .from('portfolio_content')
-        .upsert({
-          content_type: 'expertise_areas',
-          content: updatedAreas,
-          user_id: session.user.id
-        }, {
-          onConflict: 'content_type,user_id'
-        });
-
-      if (error) throw error;
-
-      setExpertiseAreas(updatedAreas);
-      toast({
-        title: "Success",
-        description: "Expertise areas reordered successfully",
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to reorder expertise areas",
-        variant: "destructive",
-      });
-    }
+    const updatedAreas = [...expertiseAreas];
+    const [movedArea] = updatedAreas.splice(oldIndex, 1);
+    updatedAreas.splice(newIndex, 0, movedArea);
+    return updateDatabase(updatedAreas);
   };
 
   return {
