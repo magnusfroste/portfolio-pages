@@ -37,7 +37,6 @@ export const useExpertiseAreas = (session: any) => {
       }
       
       console.log('Fetched expertise areas:', data);
-      // Ensure data.content is an array of ExpertiseArea before setting state
       const content = data?.content as ExpertiseArea[];
       setExpertiseAreas(content || []);
     } catch (error) {
@@ -63,23 +62,16 @@ export const useExpertiseAreas = (session: any) => {
     }
 
     try {
-      // First get the current areas
-      const { data: currentData } = await supabase
-        .from('portfolio_content')
-        .select('content')
-        .eq('content_type', 'expertise_areas')
-        .single();
+      const updatedAreas = [...expertiseAreas, newArea];
 
-      const currentAreas = (currentData?.content as ExpertiseArea[]) || [];
-      const updatedAreas = [...currentAreas, newArea];
-
-      // Update the content with the new area
       const { error } = await supabase
         .from('portfolio_content')
         .upsert({
           content_type: 'expertise_areas',
           content: updatedAreas,
           user_id: session.user.id
+        }, {
+          onConflict: 'content_type,user_id'
         });
 
       if (error) throw error;
@@ -119,6 +111,8 @@ export const useExpertiseAreas = (session: any) => {
           content_type: 'expertise_areas',
           content: updatedAreas,
           user_id: session.user.id
+        }, {
+          onConflict: 'content_type,user_id'
         });
 
       if (error) throw error;
@@ -157,6 +151,8 @@ export const useExpertiseAreas = (session: any) => {
           content_type: 'expertise_areas',
           content: updatedAreas,
           user_id: session.user.id
+        }, {
+          onConflict: 'content_type,user_id'
         });
 
       if (error) throw error;
@@ -197,6 +193,8 @@ export const useExpertiseAreas = (session: any) => {
           content_type: 'expertise_areas',
           content: updatedAreas,
           user_id: session.user.id
+        }, {
+          onConflict: 'content_type,user_id'
         });
 
       if (error) throw error;
