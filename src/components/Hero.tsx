@@ -7,12 +7,15 @@ import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 const iconMap: Record<string, LucideIcon> = {
   Brain,
   Rocket,
   LineChart,
 };
+
+const availableIcons = Object.keys(iconMap);
 
 export const Hero = () => {
   const { data: content, isLoading, refetch } = useHeroContent();
@@ -109,7 +112,26 @@ export const Hero = () => {
             </div>
             <div className="flex justify-center gap-12 text-gray-700">
               {editedContent.features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className="flex flex-col items-center gap-2">
+                  <Select
+                    value={feature.icon}
+                    onValueChange={(value) => {
+                      const newFeatures = [...editedContent.features];
+                      newFeatures[index] = { ...feature, icon: value };
+                      setEditedContent({ ...editedContent, features: newFeatures });
+                    }}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue placeholder="Select icon" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableIcons.map((icon) => (
+                        <SelectItem key={icon} value={icon}>
+                          {icon}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <Input
                     value={feature.text}
                     onChange={(e) => {
