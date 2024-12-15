@@ -13,12 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const iconMap: { [key: string]: any } = {
   Brain,
   Rocket,
   Command,
 };
+
+const availableIcons = Object.keys(iconMap);
 
 export const AboutMe = () => {
   const session = useSession();
@@ -108,6 +111,21 @@ export const AboutMe = () => {
                             onChange={(e) => updateHighlight(index, 'title', e.target.value)}
                             placeholder="Title"
                           />
+                          <Select
+                            value={highlight.icon}
+                            onValueChange={(value) => updateHighlight(index, 'icon', value)}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select icon" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableIcons.map((icon) => (
+                                <SelectItem key={icon} value={icon}>
+                                  {icon}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <Textarea
                             value={highlight.description}
                             onChange={(e) => updateHighlight(index, 'description', e.target.value)}
