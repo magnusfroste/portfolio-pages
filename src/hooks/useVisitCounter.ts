@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useVisitCounter = () => {
+  const { toast } = useToast();
+
   useEffect(() => {
     const incrementVisitCount = async () => {
       const currentUrl = window.location.origin;
@@ -16,6 +19,11 @@ export const useVisitCounter = () => {
 
         if (selectError) {
           console.error('Error checking visit count:', selectError);
+          toast({
+            title: "Error",
+            description: "Failed to check visit count",
+            variant: "destructive",
+          });
           return;
         }
 
@@ -31,6 +39,11 @@ export const useVisitCounter = () => {
 
           if (updateError) {
             console.error('Error updating visit count:', updateError);
+            toast({
+              title: "Error",
+              description: "Failed to update visit count",
+              variant: "destructive",
+            });
           }
         } else {
           // Insert new record
@@ -45,10 +58,20 @@ export const useVisitCounter = () => {
 
           if (insertError) {
             console.error('Error inserting visit count:', insertError);
+            toast({
+              title: "Error",
+              description: "Failed to create visit count",
+              variant: "destructive",
+            });
           }
         }
       } catch (error) {
         console.error('Error tracking visit:', error);
+        toast({
+          title: "Error",
+          description: "Failed to track visit",
+          variant: "destructive",
+        });
       }
     };
 
