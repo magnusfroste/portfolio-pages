@@ -6,8 +6,10 @@ import { Contact } from "@/components/Contact";
 import { Navigation } from "@/components/Navigation";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { Helmet } from "react-helmet";
+import { useVisitCounter } from "@/hooks/useVisitCounter";
 
 const Index = () => {
+  useVisitCounter();
   return (
     <>
       <Helmet>
