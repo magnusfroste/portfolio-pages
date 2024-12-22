@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      accounts: {
+      air_accounts: {
         Row: {
           account: string
           account_name: string
@@ -30,6 +30,117 @@ export type Database = {
           created_at?: string | null
           id?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      air_companies: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      air_transactions: {
+        Row: {
+          account: string
+          created_at: string | null
+          credit: number
+          date: string | null
+          debit: number
+          description: string | null
+          id: number
+          user_id: string
+          ver: number | null
+        }
+        Insert: {
+          account: string
+          created_at?: string | null
+          credit: number
+          date?: string | null
+          debit: number
+          description?: string | null
+          id?: number
+          user_id: string
+          ver?: number | null
+        }
+        Update: {
+          account?: string
+          created_at?: string | null
+          credit?: number
+          date?: string | null
+          debit?: number
+          description?: string | null
+          id?: number
+          user_id?: string
+          ver?: number | null
+        }
+        Relationships: []
+      }
+      anavid_testdata: {
+        Row: {
+          age: string | null
+          gender: string | null
+          Id: number
+          id_camera: number | null
+          id_person: number | null
+          leave_date: string | null
+          visit_date: string | null
+        }
+        Insert: {
+          age?: string | null
+          gender?: string | null
+          Id: number
+          id_camera?: number | null
+          id_person?: number | null
+          leave_date?: string | null
+          visit_date?: string | null
+        }
+        Update: {
+          age?: string | null
+          gender?: string | null
+          Id?: number
+          id_camera?: number | null
+          id_person?: number | null
+          leave_date?: string | null
+          visit_date?: string | null
+        }
+        Relationships: []
+      }
+      app_visits: {
+        Row: {
+          app_url: string
+          created_at: string | null
+          id: number
+          updated_at: string | null
+          visit_count: number | null
+        }
+        Insert: {
+          app_url: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          visit_count?: number | null
+        }
+        Update: {
+          app_url?: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          visit_count?: number | null
         }
         Relationships: []
       }
@@ -80,57 +191,6 @@ export type Database = {
           },
         ]
       }
-      companies: {
-        Row: {
-          company_name: string | null
-          created_at: string
-          id: number
-          user_id: string | null
-        }
-        Insert: {
-          company_name?: string | null
-          created_at?: string
-          id?: number
-          user_id?: string | null
-        }
-        Update: {
-          company_name?: string | null
-          created_at?: string
-          id?: number
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      expertise_areas: {
-        Row: {
-          created_at: string | null
-          description: string
-          id: number
-          sort_order: number
-          title: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description: string
-          id?: number
-          sort_order?: number
-          title: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string
-          id?: number
-          sort_order?: number
-          title?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       favourites: {
         Row: {
           classified_id: number
@@ -159,6 +219,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      llm_urls: {
+        Row: {
+          created_at: string | null
+          endpoint: string
+          id: number
+          is_active: boolean | null
+          nick: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          endpoint: string
+          id?: number
+          is_active?: boolean | null
+          nick?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          endpoint?: string
+          id?: number
+          is_active?: boolean | null
+          nick?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -194,6 +281,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      migraine_entries: {
+        Row: {
+          created_at: string | null
+          duration_hours: number | null
+          id: number
+          notes: string | null
+          pain_intensity: number
+          pain_location: string
+          triggers: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duration_hours?: number | null
+          id?: number
+          notes?: string | null
+          pain_intensity: number
+          pain_location: string
+          triggers: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duration_hours?: number | null
+          id?: number
+          notes?: string | null
+          pain_intensity?: number
+          pain_location?: string
+          triggers?: string[]
+          user_id?: string
+        }
+        Relationships: []
       }
       opening_balances: {
         Row: {
@@ -426,77 +546,17 @@ export type Database = {
         }
         Relationships: []
       }
-      testdata: {
-        Row: {
-          age: string | null
-          gender: string | null
-          Id: number
-          id_camera: number | null
-          id_person: number | null
-          leave_date: string | null
-          visit_date: string | null
-        }
-        Insert: {
-          age?: string | null
-          gender?: string | null
-          Id: number
-          id_camera?: number | null
-          id_person?: number | null
-          leave_date?: string | null
-          visit_date?: string | null
-        }
-        Update: {
-          age?: string | null
-          gender?: string | null
-          Id?: number
-          id_camera?: number | null
-          id_person?: number | null
-          leave_date?: string | null
-          visit_date?: string | null
-        }
-        Relationships: []
-      }
-      transactions: {
-        Row: {
-          account: string
-          created_at: string | null
-          credit: number
-          date: string | null
-          debit: number
-          description: string | null
-          id: number
-          user_id: string
-          ver: number | null
-        }
-        Insert: {
-          account: string
-          created_at?: string | null
-          credit: number
-          date?: string | null
-          debit: number
-          description?: string | null
-          id?: number
-          user_id: string
-          ver?: number | null
-        }
-        Update: {
-          account?: string
-          created_at?: string | null
-          credit?: number
-          date?: string | null
-          debit?: number
-          description?: string | null
-          id?: number
-          user_id?: string
-          ver?: number | null
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_secret: {
+        Args: {
+          secret_name: string
+        }
+        Returns: Json
+      }
       insert_record: {
         Args: {
           p_user_id: string

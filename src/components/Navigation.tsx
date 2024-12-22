@@ -3,16 +3,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { LogIn, LogOut, LayoutDashboard, Home } from "lucide-react";
+import { useToast } from "./ui/use-toast";
 
 export const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [session, setSession] = useState<any>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+    }).catch((error) => {
+      console.error('Error getting session:', error);
     });
 
     // Listen for auth changes
@@ -20,15 +24,33 @@ export const Navigation = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      
+      // If session expired or user logged out, redirect to home
+      if (!session && location.pathname === '/dashboard') {
+        navigate('/');
+        toast({
+          title: "Session expired",
+          description: "Please log in again to continue.",
+        });
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate, location.pathname, toast]);
 
   const handleAuthClick = async () => {
     if (session) {
-      await supabase.auth.signOut();
-      navigate("/");
+      try {
+        await supabase.auth.signOut();
+        navigate("/");
+      } catch (error) {
+        console.error('Error signing out:', error);
+        toast({
+          title: "Error",
+          description: "Failed to sign out. Please try again.",
+          variant: "destructive",
+        });
+      }
     } else {
       navigate("/login");
     }
