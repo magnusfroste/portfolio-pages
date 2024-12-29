@@ -90,9 +90,9 @@ export const PortfolioCard = ({
                   <GripVertical className="h-6 w-6 text-gray-400" />
                 </div>
               )}
-              <div className="md:flex gap-10 items-start">
+              <div className="md:flex gap-10 items-center">
                 <div className={`flex-1 p-6 ${imageOnRight ? 'order-2' : 'order-1'}`}>
-                  <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px' }}>
+                  <div className="relative w-full rounded-md overflow-hidden" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {isEditing ? (
                       <FormProvider {...form}>
                         <ImageUploadField form={form} initialImageUrl={item.image_url} />
@@ -102,7 +102,8 @@ export const PortfolioCard = ({
                         <img
                           src={item.image_url}
                           alt={item.header}
-                          className="absolute inset-0 w-full h-full object-cover object-center"
+                          className="absolute inset-0 w-full h-full object-cover"
+                          style={{ objectPosition: 'center' }}
                           loading="lazy"
                         />
                       )
