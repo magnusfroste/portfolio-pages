@@ -1,6 +1,8 @@
 import { CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { ExternalLink } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "../ui/use-toast";
 
 type StaticPortfolioContentProps = {
   item: any;
@@ -8,6 +10,25 @@ type StaticPortfolioContentProps = {
 };
 
 export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContentProps) => {
+  const { toast } = useToast();
+
+  const handleExternalClick = async () => {
+    try {
+      await supabase
+        .from('portfolio_clicks')
+        .insert([{ 
+          project_title: item.header,
+        }]);
+    } catch (error) {
+      console.error('Error tracking external click:', error);
+      toast({
+        title: "Error",
+        description: "Failed to track portfolio click",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <CardHeader className="p-0">
@@ -29,6 +50,7 @@ export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContent
         <Button
           variant="outline"
           className="w-fit"
+          onClick={handleExternalClick}
           asChild
         >
           <a href={item.link} target="_blank" rel="noopener noreferrer">
