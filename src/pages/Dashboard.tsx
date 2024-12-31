@@ -47,9 +47,9 @@ const Dashboard = () => {
         setTotalClicks(clicksCount || 0);
 
         // Fetch clicks data for chart
-        const today = new Date();
-        const sevenDaysAgo = new Date(today);
+        const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
 
         const { data: clicksData, error: clicksDataError } = await supabase
           .from('portfolio_clicks')

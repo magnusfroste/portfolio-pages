@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import {
   DndContext,
   closestCenter,
@@ -21,13 +20,13 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SortablePortfolioCard } from "./dashboard/SortablePortfolioCard";
 import { MessagesList } from "./dashboard/MessagesList";
+import { DailyClicksChart } from "./dashboard/DailyClicksChart";
 
 type ContactMessage = {
   id: number;
@@ -123,51 +122,17 @@ export const DashboardStats = ({
                 items={cards.map(card => card.header)}
                 strategy={verticalListSortingStrategy}
               >
-                {cards.map((card, index) => (
-                  <SortablePortfolioCard key={card.header} card={card} index={index} />
-                ))}
+                <div className="space-y-2">
+                  {cards.map((card, index) => (
+                    <SortablePortfolioCard key={card.header} card={card} index={index} />
+                  ))}
+                </div>
               </SortableContext>
             </DndContext>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Daily Click Activity
-            </CardTitle>
-            <MousePointerClick className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="h-[400px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={clicksData}>
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#888888"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(value) => `${value}`}
-                  />
-                  <Tooltip />
-                  <Bar 
-                    dataKey="clicks" 
-                    fill="currentColor" 
-                    radius={[4, 4, 0, 0]}
-                    className="fill-primary"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <DailyClicksChart clicksData={clicksData} />
       </div>
 
       <Card>
