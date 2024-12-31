@@ -23,6 +23,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  arrayMove,
 } from "@dnd-kit/sortable";
 import { SortablePortfolioCard } from "./dashboard/SortablePortfolioCard";
 import { MessagesList } from "./dashboard/MessagesList";
