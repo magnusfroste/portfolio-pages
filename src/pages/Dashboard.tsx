@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { DashboardStats } from "@/components/DashboardStats";
 import { Navigation } from "@/components/Navigation";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 type ContactMessage = {
   id: number;
@@ -25,6 +26,12 @@ type PopularCard = {
   clicks: number;
 };
 
+type RawClick = {
+  id: number;
+  project_title: string;
+  clicked_at: string;
+};
+
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [totalClicks, setTotalClicks] = useState(0);
@@ -32,6 +39,7 @@ const Dashboard = () => {
   const [latestMessages, setLatestMessages] = useState<ContactMessage[]>([]);
   const [clicksData, setClicksData] = useState<ClickData[]>([]);
   const [popularCards, setPopularCards] = useState<PopularCard[]>([]);
+  const [rawClicks, setRawClicks] = useState<RawClick[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -45,6 +53,16 @@ const Dashboard = () => {
 
         if (clicksError) throw clicksError;
         setTotalClicks(clicksCount || 0);
+
+        // Fetch raw clicks for development table
+        const { data: rawClicksData, error: rawClicksError } = await supabase
+          .from('portfolio_clicks')
+          .select('id, project_title, clicked_at')
+          .order('clicked_at', { ascending: false })
+          .limit(50);
+
+        if (rawClicksError) throw rawClicksError;
+        setRawClicks(rawClicksData || []);
 
         // Fetch clicks data for chart
         const sevenDaysAgo = new Date();
@@ -93,7 +111,6 @@ const Dashboard = () => {
 
         setPopularCards(sortedCards);
 
-        // Fetch total messages and latest messages
         const { count: messagesCount, error: messagesCountError } = await supabase
           .from('portfolio_messages')
           .select('*', { count: 'exact' });
@@ -175,6 +192,31 @@ const Dashboard = () => {
         popularCards={popularCards}
         onDeleteMessage={handleDeleteMessage}
       />
+
+      {/* Development only: Raw clicks table */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Recent Clicks (Development Only)</h2>
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Project Title</TableHead>
+                <TableHead>Clicked At</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rawClicks.map((click) => (
+                <TableRow key={click.id}>
+                  <TableCell>{click.id}</TableCell>
+                  <TableCell>{click.project_title}</TableCell>
+                  <TableCell>{format(new Date(click.clicked_at), 'MMM dd, yyyy HH:mm:ss')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 };
