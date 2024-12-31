@@ -12,21 +12,34 @@ type StaticPortfolioContentProps = {
 export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContentProps) => {
   const { toast } = useToast();
 
-  const handleExternalClick = async () => {
+  const trackClick = async () => {
     try {
-      await supabase
+      const { error } = await supabase
         .from('portfolio_clicks')
         .insert([{ 
           project_title: item.header,
         }]);
+      
+      if (error) throw error;
+      
+      console.log('Click tracked for:', item.header); // Debug log
     } catch (error) {
-      console.error('Error tracking external click:', error);
+      console.error('Error tracking click:', error);
       toast({
         title: "Error",
         description: "Failed to track portfolio click",
         variant: "destructive",
       });
     }
+  };
+
+  const handleViewInApp = async () => {
+    await trackClick();
+    onClick();
+  };
+
+  const handleExternalClick = async () => {
+    await trackClick();
   };
 
   return (
@@ -43,7 +56,7 @@ export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContent
         <Button
           variant="default"
           className="w-fit"
-          onClick={onClick}
+          onClick={handleViewInApp}
         >
           View in App
         </Button>
