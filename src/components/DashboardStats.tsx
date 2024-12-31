@@ -3,9 +3,7 @@ import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { MessageSquare, MousePointerClick, Trash2, GripVertical } from "lucide-react";
+import { MessageSquare, MousePointerClick } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +24,10 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { SortablePortfolioCard } from "./dashboard/SortablePortfolioCard";
+import { MessagesList } from "./dashboard/MessagesList";
 
 type ContactMessage = {
   id: number;
@@ -42,41 +40,6 @@ type ContactMessage = {
 type PopularCard = {
   header: string;
   clicks: number;
-};
-
-const SortableCard = ({ card, index }: { card: PopularCard; index: number }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: card.header });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="mb-4 p-3 border rounded-lg"
-    >
-      <div className="flex justify-between items-start">
-        <div className="font-medium flex items-center gap-2">
-          <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
-          </button>
-          {index + 1}. {card.header}
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {card.clicks} clicks
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export const DashboardStats = ({
@@ -117,7 +80,6 @@ export const DashboardStats = ({
       });
 
       try {
-        // Update sort order in the database
         const { error } = await supabase
           .from('portfolio_cards')
           .update({ sort_order: cards.findIndex(card => card.header === active.id) })
@@ -152,22 +114,20 @@ export const DashboardStats = ({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold mb-4">{totalClicks} total clicks</div>
-            <ScrollArea className="h-[200px]">
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={cards.map(card => card.header)}
+                strategy={verticalListSortingStrategy}
               >
-                <SortableContext
-                  items={cards.map(card => card.header)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {cards.map((card, index) => (
-                    <SortableCard key={card.header} card={card} index={index} />
-                  ))}
-                </SortableContext>
-              </DndContext>
-            </ScrollArea>
+                {cards.map((card, index) => (
+                  <SortablePortfolioCard key={card.header} card={card} index={index} />
+                ))}
+              </SortableContext>
+            </DndContext>
           </CardContent>
         </Card>
 
@@ -219,35 +179,11 @@ export const DashboardStats = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold mb-4">{totalMessages} total</div>
-          <ScrollArea className="h-[200px]">
-            {latestMessages.map((message) => (
-              <div
-                key={message.id}
-                className="mb-4 p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors"
-                onClick={() => setSelectedMessage(message)}
-              >
-                <div className="flex justify-between items-start mb-1">
-                  <div className="font-medium">{message.name}</div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteMessage(message.id);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="text-sm text-muted-foreground truncate">
-                  {message.message}
-                </div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {format(new Date(message.created_at), 'MMM dd, yyyy')}
-                </div>
-              </div>
-            ))}
-          </ScrollArea>
+          <MessagesList 
+            messages={latestMessages}
+            onMessageClick={setSelectedMessage}
+            onDeleteMessage={onDeleteMessage}
+          />
         </CardContent>
       </Card>
 
