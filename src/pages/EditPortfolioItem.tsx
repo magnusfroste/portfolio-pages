@@ -17,7 +17,7 @@ const EditPortfolioItem = () => {
         const { data, error } = await supabase
           .from("portfolio_cards")
           .select("*")
-          .eq("id", id)
+          .eq("id", parseInt(id as string))
           .single();
 
         if (error) throw error;
@@ -50,7 +50,7 @@ const EditPortfolioItem = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Edit Portfolio Item</h1>
-      <PortfolioItemForm initialData={portfolioItem} id={Number(id)} />
+      <PortfolioItemForm initialData={portfolioItem} id={parseInt(id as string)} />
     </div>
   );
 };

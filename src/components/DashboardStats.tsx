@@ -83,7 +83,7 @@ export const DashboardStats = ({
         const { error } = await supabase
           .from('portfolio_cards')
           .update({ sort_order: cards.findIndex(card => card.header === active.id) })
-          .eq('header', active.id);
+          .eq('header', String(active.id));
 
         if (error) throw error;
 
