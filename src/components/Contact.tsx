@@ -19,11 +19,23 @@ export const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      console.log("Attempting to send message...");
+      const { data, error } = await supabase
         .from('portfolio_messages')
-        .insert([{ name, email, message }]);
+        .insert([{ 
+          name, 
+          email, 
+          message,
+          status: 'unread' // Adding explicit status
+        }])
+        .select();
 
-      if (error) throw error;
+      console.log("Supabase response:", { data, error });
+
+      if (error) {
+        console.error('Detailed error:', error);
+        throw error;
+      }
 
       toast({
         title: "Message sent!",
