@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 type ContactMessage = {
   id: number;
@@ -9,6 +10,8 @@ type ContactMessage = {
   email: string;
   message: string;
   created_at: string;
+  status: string;
+  user_id: string | null;
 };
 
 interface MessagesListProps {
@@ -19,31 +22,46 @@ interface MessagesListProps {
 
 export const MessagesList = ({ messages, onMessageClick, onDeleteMessage }: MessagesListProps) => {
   return (
-    <ScrollArea className="h-[200px]">
+    <ScrollArea className="h-[400px]">
       {messages.map((message) => (
         <div
           key={message.id}
-          className="mb-4 p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors"
+          className="mb-4 p-4 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors"
           onClick={() => onMessageClick(message)}
         >
-          <div className="flex justify-between items-start mb-1">
-            <div className="font-medium">{message.name}</div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteMessage(message.id);
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <div className="font-medium text-lg">{message.name}</div>
+              <div className="text-sm text-muted-foreground">{message.email}</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant={message.status === "unread" ? "default" : "secondary"}>
+                {message.status}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteMessage(message.id);
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground truncate">
+          <div className="text-sm text-muted-foreground">
             {message.message}
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            {format(new Date(message.created_at), 'MMM dd, yyyy')}
+          <div className="flex justify-between items-center mt-2">
+            <div className="text-xs text-muted-foreground">
+              {format(new Date(message.created_at), 'MMM dd, yyyy HH:mm')}
+            </div>
+            {message.user_id && (
+              <div className="text-xs text-muted-foreground">
+                User ID: {message.user_id}
+              </div>
+            )}
           </div>
         </div>
       ))}
