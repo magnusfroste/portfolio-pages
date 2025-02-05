@@ -5,8 +5,44 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MessagesList } from "./dashboard/MessagesList";
 import { DailyClicksChart } from "./dashboard/DailyClicksChart";
 
-export const DashboardStats = () => {
-  const [cards, setCards] = useState<any[]>([]);
+type PortfolioCard = {
+  id: number;
+  header: string;
+  description: string;
+  link: string;
+  image_url?: string;
+  sort_order: number;
+  user_id?: string;
+  created_at?: string;
+};
+
+interface DashboardStatsProps {
+  totalClicks: number;
+  totalMessages: number;
+  latestMessages: Array<{
+    id: number;
+    name: string;
+    email: string;
+    message: string;
+    created_at: string;
+  }>;
+  clicksData: Array<{
+    date: string;
+    clicks: number;
+  }>;
+  popularCards: Array<{
+    header: string;
+    clicks: number;
+  }>;
+  onDeleteMessage: (id: number) => Promise<void>;
+}
+
+export const DashboardStats = ({
+  clicksData,
+  latestMessages,
+  onDeleteMessage
+}: DashboardStatsProps) => {
+  const [cards, setCards] = useState<PortfolioCard[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,11 +74,15 @@ export const DashboardStats = () => {
 
     setCards(items);
 
-    // Update sort order in database
     try {
       const updates = items.map((item, index) => ({
         id: item.id,
+        header: item.header,
+        description: item.description,
+        link: item.link,
+        image_url: item.image_url,
         sort_order: index,
+        user_id: item.user_id
       }));
 
       const { error } = await supabase
@@ -53,6 +93,10 @@ export const DashboardStats = () => {
     } catch (error) {
       console.error('Error updating sort order:', error);
     }
+  };
+
+  const handleMessageClick = (message: any) => {
+    console.log('Message clicked:', message);
   };
 
   if (loading) {
@@ -99,13 +143,17 @@ export const DashboardStats = () => {
 
         <Card className="p-6">
           <h2 className="text-2xl font-bold mb-4">Daily Portfolio Clicks</h2>
-          <DailyClicksChart />
+          <DailyClicksChart clicksData={clicksData} />
         </Card>
       </div>
 
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">Recent Messages</h2>
-        <MessagesList />
+        <MessagesList 
+          messages={latestMessages}
+          onMessageClick={handleMessageClick}
+          onDeleteMessage={onDeleteMessage}
+        />
       </Card>
     </div>
   );

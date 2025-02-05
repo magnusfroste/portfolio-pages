@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { DashboardStats } from "@/components/DashboardStats";
 import { Navigation } from "@/components/Navigation";
+import { DashboardStats } from "@/components/DashboardStats";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
 
 type ContactMessage = {
   id: number;
@@ -41,7 +40,6 @@ const Dashboard = () => {
   const [popularCards, setPopularCards] = useState<PopularCard[]>([]);
   const [rawClicks, setRawClicks] = useState<RawClick[]>([]);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
