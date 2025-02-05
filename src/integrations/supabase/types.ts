@@ -220,33 +220,6 @@ export type Database = {
           },
         ]
       }
-      llm_urls: {
-        Row: {
-          created_at: string | null
-          endpoint: string
-          id: number
-          is_active: boolean | null
-          nick: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          endpoint: string
-          id?: number
-          is_active?: boolean | null
-          nick?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          endpoint?: string
-          id?: number
-          is_active?: boolean | null
-          nick?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       messages: {
         Row: {
           classified_id: number
@@ -477,6 +450,78 @@ export type Database = {
           name?: string
           status?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      presentation_images: {
+        Row: {
+          created_at: string | null
+          id: number
+          image_url: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          image_url: string
+          sort_order: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          image_url?: string
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quickpitch_call_history: {
+        Row: {
+          channel_name: string
+          created_at: string | null
+          end_time: string | null
+          id: number
+          participant_count: number | null
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          channel_name: string
+          created_at?: string | null
+          end_time?: string | null
+          id?: number
+          participant_count?: number | null
+          start_time: string
+          user_id: string
+        }
+        Update: {
+          channel_name?: string
+          created_at?: string | null
+          end_time?: string | null
+          id?: number
+          participant_count?: number | null
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      room_timers: {
+        Row: {
+          created_at: string | null
+          room_id: string
+          start_time: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          room_id: string
+          start_time?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          room_id?: string
+          start_time?: string | null
         }
         Relationships: []
       }
