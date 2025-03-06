@@ -55,7 +55,7 @@ export const StaticPortfolioContent = ({ item }: StaticPortfolioContentProps) =>
           asChild
         >
           <a href={item.link} target="_blank" rel="noopener noreferrer">
-            Open in New Tab <ExternalLink className="ml-2 h-4 w-4" />
+            Demo <ExternalLink className="ml-2 h-4 w-4" />
           </a>
         </Button>
       </div>
