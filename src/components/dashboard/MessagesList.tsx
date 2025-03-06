@@ -1,19 +1,9 @@
-
 import { format } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-
-type ContactMessage = {
-  id: number;
-  name: string;
-  email: string;
-  message: string;
-  created_at: string;
-  status: string;
-  user_id: string | null;
-};
+import { ContactMessage } from "@/hooks/useDashboardData";
 
 interface MessagesListProps {
   messages: ContactMessage[];

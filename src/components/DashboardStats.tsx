@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { MessagesList } from "./dashboard/MessagesList";
 import { DailyClicksChart } from "./dashboard/DailyClicksChart";
+import { ContactMessage, ClickData, PopularCard } from "@/hooks/useDashboardData";
 
 type PortfolioCard = {
   id: number;
@@ -16,28 +17,12 @@ type PortfolioCard = {
   created_at?: string;
 };
 
-type ContactMessage = {
-  id: number;
-  name: string;
-  email: string;
-  message: string;
-  created_at: string;
-  status: string;
-  user_id: string | null;
-};
-
 interface DashboardStatsProps {
   totalClicks: number;
   totalMessages: number;
   latestMessages: ContactMessage[];
-  clicksData: Array<{
-    date: string;
-    clicks: number;
-  }>;
-  popularCards: Array<{
-    header: string;
-    clicks: number;
-  }>;
+  clicksData: ClickData[];
+  popularCards: PopularCard[];
   onDeleteMessage: (id: number) => Promise<void>;
 }
 

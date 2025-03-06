@@ -2,11 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MousePointerClick } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays } from "date-fns";
-
-type ClickData = {
-  date: string;
-  clicks: number;
-};
+import { ClickData } from "@/hooks/useDashboardData";
 
 export const DailyClicksChart = ({ clicksData }: { clicksData: ClickData[] }) => {
   // Fill in missing dates with 0 clicks
