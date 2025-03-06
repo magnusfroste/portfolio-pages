@@ -13,6 +13,8 @@ type ContactMessage = {
   email: string;
   message: string;
   created_at: string;
+  status: string;
+  user_id: string | null;
 };
 
 type ClickData = {
