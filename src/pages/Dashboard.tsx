@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -150,13 +151,21 @@ const Dashboard = () => {
 
   const handleDeleteMessage = async (id: number) => {
     try {
+      console.log(`Attempting to delete message with ID: ${id}`);
+      
       const { error } = await supabase
         .from('portfolio_messages')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase delete error:', error);
+        throw error;
+      }
 
+      console.log(`Successfully deleted message with ID: ${id} from Supabase`);
+      
+      // Update state only after successful deletion from the database
       setLatestMessages(prev => prev.filter(message => message.id !== id));
       setTotalMessages(prev => prev - 1);
 
