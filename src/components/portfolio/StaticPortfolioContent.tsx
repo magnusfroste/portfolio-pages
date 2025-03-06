@@ -37,6 +37,9 @@ export const StaticPortfolioContent = ({ item }: StaticPortfolioContentProps) =>
     await trackClick();
   };
 
+  // Check if the link exists and starts with https://
+  const hasValidLink = item.link && item.link.trim().startsWith('https://');
+
   return (
     <>
       <CardHeader className="p-0">
@@ -48,16 +51,18 @@ export const StaticPortfolioContent = ({ item }: StaticPortfolioContentProps) =>
         </p>
       </CardContent>
       <div className="flex gap-4">
-        <Button
-          variant="outline"
-          className="w-fit"
-          onClick={handleExternalClick}
-          asChild
-        >
-          <a href={item.link} target="_blank" rel="noopener noreferrer">
-            Demo <ExternalLink className="ml-2 h-4 w-4" />
-          </a>
-        </Button>
+        {hasValidLink && (
+          <Button
+            variant="outline"
+            className="w-fit"
+            onClick={handleExternalClick}
+            asChild
+          >
+            <a href={item.link} target="_blank" rel="noopener noreferrer">
+              Demo <ExternalLink className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
+        )}
       </div>
     </>
   );
