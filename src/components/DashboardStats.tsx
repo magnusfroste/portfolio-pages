@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,16 +17,21 @@ type PortfolioCard = {
   created_at?: string;
 };
 
+// Define the ContactMessage type to match what MessagesList expects
+type ContactMessage = {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  created_at: string;
+  status: string;
+  user_id?: string;
+};
+
 interface DashboardStatsProps {
   totalClicks: number;
   totalMessages: number;
-  latestMessages: Array<{
-    id: number;
-    name: string;
-    email: string;
-    message: string;
-    created_at: string;
-  }>;
+  latestMessages: ContactMessage[];
   clicksData: Array<{
     date: string;
     clicks: number;
