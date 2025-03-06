@@ -1,3 +1,4 @@
+
 import { CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { ExternalLink } from "lucide-react";
@@ -6,23 +7,22 @@ import { useToast } from "../ui/use-toast";
 
 type StaticPortfolioContentProps = {
   item: any;
-  onClick: () => void;
 };
 
-export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContentProps) => {
+export const StaticPortfolioContent = ({ item }: StaticPortfolioContentProps) => {
   const { toast } = useToast();
 
-  const trackClick = async (type: 'internal' | 'external') => {
+  const trackClick = async () => {
     try {
       const { error } = await supabase
         .from('portfolio_clicks')
         .insert([{ 
-          project_title: `${item.header} (${type})`,
+          project_title: item.header,
         }]);
       
       if (error) throw error;
       
-      console.log('Click tracked for:', item.header, type);
+      console.log('Click tracked for:', item.header);
     } catch (error) {
       console.error('Error tracking click:', error);
       toast({
@@ -33,13 +33,8 @@ export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContent
     }
   };
 
-  const handleViewInApp = async () => {
-    await trackClick('internal');
-    onClick();
-  };
-
   const handleExternalClick = async () => {
-    await trackClick('external');
+    await trackClick();
   };
 
   return (
@@ -53,13 +48,6 @@ export const StaticPortfolioContent = ({ item, onClick }: StaticPortfolioContent
         </p>
       </CardContent>
       <div className="flex gap-4">
-        <Button
-          variant="default"
-          className="w-fit"
-          onClick={handleViewInApp}
-        >
-          View in App
-        </Button>
         <Button
           variant="outline"
           className="w-fit"

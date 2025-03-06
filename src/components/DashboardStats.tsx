@@ -17,14 +17,14 @@ type PortfolioCard = {
   created_at?: string;
 };
 
-// Define the ContactMessage type to match what MessagesList expects
+// Define the ContactMessage type to match what Dashboard expects
 type ContactMessage = {
   id: number;
   name: string;
   email: string;
   message: string;
   created_at: string;
-  status: string;
+  status?: string;
   user_id?: string;
 };
 

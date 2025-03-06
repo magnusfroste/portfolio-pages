@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Edit, X, GripVertical } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -24,7 +25,6 @@ type PortfolioCardProps = {
   onSave: (data: any) => void;
   onCancel: () => void;
   onDelete: () => void;
-  onClick: () => void;
   index: number;
 };
 
@@ -36,7 +36,6 @@ export const PortfolioCard = ({
   onSave,
   onCancel,
   onDelete,
-  onClick,
   index,
 }: PortfolioCardProps) => {
   const form = useForm({
@@ -119,7 +118,7 @@ export const PortfolioCard = ({
                       />}
                     </>
                   ) : (
-                    <StaticPortfolioContent item={item} onClick={onClick} />
+                    <StaticPortfolioContent item={item} />
                   )}
                 </div>
               </div>

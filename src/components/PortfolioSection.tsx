@@ -1,6 +1,6 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ProjectDialog } from "./ProjectDialog";
 import { PortfolioCard } from "./PortfolioCard";
 import { PortfolioHeader } from "./portfolio/PortfolioHeader";
 import { AddPortfolioButton } from "./portfolio/AddPortfolioButton";
@@ -11,7 +11,6 @@ import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrate
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 export const PortfolioSection = () => {
-  const [selectedProject, setSelectedProject] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const { toast } = useToast();
@@ -66,28 +65,6 @@ export const PortfolioSection = () => {
     
     console.log('Old index:', oldIndex, 'New index:', newIndex);
     await reorderItems(oldIndex, newIndex);
-  };
-
-  const handlePortfolioClick = async (project: any) => {
-    if (editingId === project.id) return;
-    
-    try {
-      await supabase
-        .from('portfolio_clicks')
-        .insert([{ 
-          project_title: project.header,
-          user_id: session?.user?.id 
-        }]);
-      
-      setSelectedProject(project);
-    } catch (error) {
-      console.error('Error tracking click:', error);
-      toast({
-        title: "Error",
-        description: "Failed to track portfolio click",
-        variant: "destructive",
-      });
-    }
   };
 
   const handleAddNewCard = async () => {
@@ -149,7 +126,6 @@ export const PortfolioSection = () => {
                   onSave={(formData) => handleSave(item, formData)}
                   onCancel={() => setEditingId(null)}
                   onDelete={() => deleteItem(item.id)}
-                  onClick={() => handlePortfolioClick(item)}
                   index={index}
                 />
               ))}
@@ -161,12 +137,6 @@ export const PortfolioSection = () => {
           <AddPortfolioButton onAdd={handleAddNewCard} />
         )}
       </div>
-
-      <ProjectDialog
-        isOpen={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
-        project={selectedProject}
-      />
     </section>
   );
 };
