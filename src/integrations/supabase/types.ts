@@ -120,30 +120,6 @@ export type Database = {
         }
         Relationships: []
       }
-      app_visits: {
-        Row: {
-          app_url: string
-          created_at: string | null
-          id: number
-          updated_at: string | null
-          visit_count: number | null
-        }
-        Insert: {
-          app_url: string
-          created_at?: string | null
-          id?: number
-          updated_at?: string | null
-          visit_count?: number | null
-        }
-        Update: {
-          app_url?: string
-          created_at?: string | null
-          id?: number
-          updated_at?: string | null
-          visit_count?: number | null
-        }
-        Relationships: []
-      }
       classifieds: {
         Row: {
           category: string
@@ -471,6 +447,30 @@ export type Database = {
           name?: string
           status?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      portfolio_visits: {
+        Row: {
+          app_url: string
+          created_at: string | null
+          id: number
+          updated_at: string | null
+          visit_count: number | null
+        }
+        Insert: {
+          app_url: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          visit_count?: number | null
+        }
+        Update: {
+          app_url?: string
+          created_at?: string | null
+          id?: number
+          updated_at?: string | null
+          visit_count?: number | null
         }
         Relationships: []
       }

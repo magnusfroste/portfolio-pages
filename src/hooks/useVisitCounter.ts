@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -11,7 +12,7 @@ export const useVisitCounter = () => {
         
         // First check if entry exists
         const { data: existingVisit, error: fetchError } = await supabase
-          .from("app_visits")
+          .from("portfolio_visits")
           .select("*")
           .eq("app_url", currentUrl)
           .single();
@@ -24,7 +25,7 @@ export const useVisitCounter = () => {
         if (existingVisit) {
           // Update existing entry
           const { error: updateError } = await supabase
-            .from("app_visits")
+            .from("portfolio_visits")
             .update({
               visit_count: (existingVisit.visit_count || 0) + 1,
               updated_at: new Date().toISOString(),
@@ -41,7 +42,7 @@ export const useVisitCounter = () => {
           }
         } else {
           // Create new entry
-          const { error: insertError } = await supabase.from("app_visits").insert([
+          const { error: insertError } = await supabase.from("portfolio_visits").insert([
             {
               app_url: currentUrl,
               visit_count: 1,
