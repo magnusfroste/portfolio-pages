@@ -123,7 +123,13 @@ const Dashboard = () => {
           .limit(5);
 
         if (latestMessagesError) throw latestMessagesError;
-        setLatestMessages(latestMessagesData || []);
+        // Ensure messages have the required status field
+        const messagesWithStatus = latestMessagesData?.map(msg => ({
+          ...msg,
+          status: msg.status || 'unread' // Provide default 'unread' if status is null
+        })) || [];
+        
+        setLatestMessages(messagesWithStatus);
 
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,15 +16,14 @@ type PortfolioCard = {
   created_at?: string;
 };
 
-// Define the ContactMessage type to match what Dashboard expects
 type ContactMessage = {
   id: number;
   name: string;
   email: string;
   message: string;
   created_at: string;
-  status?: string;
-  user_id?: string;
+  status: string;
+  user_id: string | null;
 };
 
 interface DashboardStatsProps {
@@ -101,7 +99,7 @@ export const DashboardStats = ({
     }
   };
 
-  const handleMessageClick = (message: any) => {
+  const handleMessageClick = (message: ContactMessage) => {
     console.log('Message clicked:', message);
   };
 
